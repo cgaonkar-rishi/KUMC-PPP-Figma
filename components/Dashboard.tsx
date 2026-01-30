@@ -5,22 +5,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 export function Dashboard() {
   const [paymentPeriod, setPaymentPeriod] = useState('week');
-  
+
   const stats = [
     { label: 'Active Studies', value: '24', change: '+12%', trend: 'up', icon: FlaskConical, color: 'blue' },
     { label: 'Total Participants', value: '1,845', change: '+8%', trend: 'up', icon: Users, color: 'green' },
     { label: 'Visits Today', value: '89', change: '-5%', trend: 'down', icon: Calendar, color: 'orange' },
     { label: 'Active Enrollments', value: '156', change: '+15%', trend: 'up', icon: Activity, color: 'purple' },
-  ];
-
-  const visitsData = [
-    { name: 'Mon', visits: 45 },
-    { name: 'Tue', visits: 52 },
-    { name: 'Wed', visits: 48 },
-    { name: 'Thu', visits: 61 },
-    { name: 'Fri', visits: 55 },
-    { name: 'Sat', visits: 38 },
-    { name: 'Sun', visits: 28 },
   ];
 
   const recentPaymentsData = [
@@ -68,14 +58,6 @@ export function Dashboard() {
     }
   };
 
-  const studyData = [
-    { name: 'Cardiology', value: 6, color: '#3b82f6' },
-    { name: 'Neurology', value: 4, color: '#10b981' },
-    { name: 'Oncology', value: 5, color: '#f59e0b' },
-    { name: 'Pediatrics', value: 3, color: '#8b5cf6' },
-    { name: 'Other', value: 6, color: '#6b7280' },
-  ];
-
   const recentParticipants = [
     { id: 1, name: 'John Smith', participantId: 'P-2026-001', study: 'CHS-2026-001', enrollDate: '2026-01-02', status: 'Active' },
     { id: 2, name: 'Sarah Johnson', participantId: 'P-2025-156', study: 'NDR-2025-042', enrollDate: '2025-12-28', status: 'Active' },
@@ -98,7 +80,7 @@ export function Dashboard() {
         <h3 className="text-lg mb-3">Toast Notifications Demo</h3>
         <p className="text-sm text-gray-600 mb-4">Click the buttons below to see different notification types:</p>
         <div className="flex gap-3 flex-wrap">
-          <button 
+          <button
             onClick={() => toast.success('Operation completed successfully!', {
               description: 'Your changes have been saved.'
             })}
@@ -106,7 +88,7 @@ export function Dashboard() {
           >
             Success Message
           </button>
-          <button 
+          <button
             onClick={() => toast.error('Operation failed', {
               description: 'Please check all required fields and try again.'
             })}
@@ -114,7 +96,7 @@ export function Dashboard() {
           >
             Error Message
           </button>
-          <button 
+          <button
             onClick={() => toast.info('Important information', {
               description: 'You have 3 pending payment requests to review.'
             })}
@@ -122,7 +104,7 @@ export function Dashboard() {
           >
             Info Message
           </button>
-          <button 
+          <button
             onClick={() => toast.warning('Action required', {
               description: 'Please review the conflicting schedules.'
             })}
@@ -163,7 +145,7 @@ export function Dashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between mb-4">
               <h2>Payments by Type</h2>
-              <select 
+              <select
                 value={paymentPeriod}
                 onChange={(e) => setPaymentPeriod(e.target.value)}
                 className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
@@ -244,11 +226,10 @@ export function Dashboard() {
                   <td className="px-6 py-4">{participant.study}</td>
                   <td className="px-6 py-4">{participant.enrollDate}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      participant.status === 'Active' ? 'bg-green-100 text-green-800' :
+                    <span className={`px-3 py-1 rounded-full text-sm ${participant.status === 'Active' ? 'bg-green-100 text-green-800' :
                       participant.status === 'Screening' ? 'bg-orange-100 text-orange-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
+                        'bg-blue-100 text-blue-800'
+                      }`}>
                       {participant.status}
                     </span>
                   </td>

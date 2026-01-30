@@ -1,4 +1,4 @@
-import { X, Download, Trash2, Upload, Search, ChevronDown } from 'lucide-react';
+import { X, Trash2, Upload, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 
@@ -20,17 +20,17 @@ interface UploadedFile {
   notes: string;
 }
 
-export function PaymentsPanel({ 
-  isViewMode, 
-  isEditMode, 
-  activeTab, 
-  setActiveTab, 
+export function PaymentsPanel({
+  isViewMode,
+  isEditMode,
+  activeTab,
+  setActiveTab,
   onClose,
   viewingPayment,
   editingPayment
 }: PaymentsPanelProps) {
   const currentPayment = isViewMode ? viewingPayment : editingPayment;
-  
+
   const [recipientType, setRecipientType] = useState(currentPayment?.recipientType || 'Participant');
   const [participantName, setParticipantName] = useState(currentPayment?.participantName || '');
   const [requestType, setRequestType] = useState(currentPayment?.requestType || 'Payment');
@@ -45,15 +45,15 @@ export function PaymentsPanel({
   const [totalAmount, setTotalAmount] = useState(0);
   const [showMileageCalc, setShowMileageCalc] = useState(false);
   const [showTaxCalc, setShowTaxCalc] = useState(false);
-  
+
   // Participant search autocomplete state
   const [participantSearch, setParticipantSearch] = useState('');
   const [selectedParticipant, setSelectedParticipant] = useState<any>(null);
   const [showParticipantDropdown, setShowParticipantDropdown] = useState(false);
-  
+
   // Requester state
   const [requester, setRequester] = useState(currentPayment?.requester || '');
-  
+
   // List of requesters
   const requesters = [
     "Amber Unrein", "Cristal Monge", "Emily Kelly", "Michelle Truesdale", "Jenae Moore",
@@ -80,7 +80,7 @@ export function PaymentsPanel({
     "Jeffery Honas", "Mary Butler", "Rafaela Nelson", "Francisca Javiera Allendes", "Mia Smith",
     "Jonath0n Barnette", "Joseph Kelly", "Whitney Theis", "Cameron Zoraghchi", "KUMCRI_batch KUMCRI_batch"
   ];
-  
+
   // Mock participant data with associated studies
   const allParticipants = [
     { id: 'P-2026-001', name: 'John Smith', studies: ['CHS-2026-001', 'PNS-2026-008'] },
@@ -92,7 +92,7 @@ export function PaymentsPanel({
     { id: 'P-2025-234', name: 'Robert Wilson', studies: ['NDR-2025-042'] },
     { id: 'P-2026-078', name: 'Patricia Moore', studies: ['CHS-2026-001', 'PNS-2026-008'] },
   ];
-  
+
   // All available studies
   const allStudies = [
     { id: 'CHS-2026-001', name: 'Cardiovascular Health Study' },
@@ -100,27 +100,25 @@ export function PaymentsPanel({
     { id: 'DPT-2025-019', name: 'Diabetes Prevention Trial' },
     { id: 'PNS-2026-008', name: 'Pediatric Nutrition Study' },
   ];
-  
+
   // Filter participants based on search
   const filteredParticipants = allParticipants.filter(participant =>
     participant.name.toLowerCase().includes(participantSearch.toLowerCase()) ||
     participant.id.toLowerCase().includes(participantSearch.toLowerCase())
   );
-  
+
   // Filter studies based on selected participant
-  const availableStudies = selectedParticipant 
+  const availableStudies = selectedParticipant
     ? allStudies.filter(study => selectedParticipant.studies.includes(study.id))
     : allStudies;
-  const [editingAmount, setEditingAmount] = useState(false);
-  const [editingDescription, setEditingDescription] = useState(false);
   const [description, setDescription] = useState(currentPayment?.description || '');
   const [summaryExpanded, setSummaryExpanded] = useState(false);
-  
+
   // File upload state
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [editingFileNotes, setEditingFileNotes] = useState<string | null>(null);
-  
+
   // Reimbursement line items state
   const [reimbursementLineItems, setReimbursementLineItems] = useState([
     { id: '1', description: description, amount: baseAmount, type: paymentType }
@@ -138,7 +136,7 @@ export function PaymentsPanel({
     const calculatedBaseAmount = paymentType === 'Travel' && mileage > 0 ? mileageAmount : baseAmount;
     const calculatedTaxAmount = calculatedBaseAmount * (taxRate / 100);
     const calculatedTotal = calculatedBaseAmount + calculatedTaxAmount;
-    
+
     setTaxAmount(calculatedTaxAmount);
     setTotalAmount(calculatedTotal);
   }, [baseAmount, mileage, mileageRate, taxRate, paymentType, mileageAmount]);
@@ -182,7 +180,7 @@ export function PaymentsPanel({
   // File upload handlers
   const handleFileUpload = (files: FileList | null) => {
     if (!files) return;
-    
+
     const newFiles: UploadedFile[] = Array.from(files).map(file => ({
       id: Math.random().toString(36).substr(2, 9),
       name: file.name,
@@ -190,7 +188,7 @@ export function PaymentsPanel({
       uploadDate: new Date().toLocaleDateString(),
       notes: ''
     }));
-    
+
     setUploadedFiles(prev => [...prev, ...newFiles]);
     toast.success(`${newFiles.length} file(s) uploaded successfully`);
   };
@@ -234,14 +232,14 @@ export function PaymentsPanel({
       toast.error('Please enter description and amount');
       return;
     }
-    
+
     const newItem = {
       id: Math.random().toString(36).substr(2, 9),
       description: newReimbursementDesc,
       amount: newReimbursementAmount,
       type: newReimbursementType
     };
-    
+
     setReimbursementLineItems(prev => [...prev, newItem]);
     setNewReimbursementDesc('');
     setNewReimbursementAmount(0);
@@ -260,7 +258,7 @@ export function PaymentsPanel({
   };
 
   const updateReimbursementLineItem = (itemId: string, field: string, value: any) => {
-    setReimbursementLineItems(prev => prev.map(item => 
+    setReimbursementLineItems(prev => prev.map(item =>
       item.id === itemId ? { ...item, [field]: value } : item
     ));
   };
@@ -287,38 +285,35 @@ export function PaymentsPanel({
               <X size={20} />
             </button>
           </div>
-          
+
           {/* Tabs Navigation */}
           <div className="px-6">
             <div className="flex gap-1 border-b border-gray-200">
               <button
                 onClick={() => setActiveTab('details')}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === 'details'
+                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'details'
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Details
               </button>
               <button
                 onClick={() => setActiveTab('verification')}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === 'verification'
+                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'verification'
                     ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
                 Verification & Documents
               </button>
               {(isViewMode || isEditMode) && (
                 <button
                   onClick={() => setActiveTab('history')}
-                  className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === 'history'
+                  className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'history'
                       ? 'border-blue-600 text-blue-600'
                       : 'border-transparent text-gray-600 hover:text-gray-900'
-                  }`}
+                    }`}
                 >
                   Audit History
                 </button>
@@ -356,7 +351,7 @@ export function PaymentsPanel({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
-                    
+
                     {summaryExpanded && (
                       <div className="px-4 pb-4 pt-2 border-t border-gray-200">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -379,14 +374,13 @@ export function PaymentsPanel({
                           </div>
                           <div>
                             <label className="block text-sm text-gray-600 mb-1">Status</label>
-                            <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-                              currentPayment.status === 'New' ? 'bg-orange-100 text-orange-800' :
-                              currentPayment.status === 'Pending Approval' ? 'bg-orange-100 text-orange-800' :
-                              currentPayment.status === 'On Hold' ? 'bg-yellow-100 text-yellow-800' :
-                              currentPayment.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                              currentPayment.status === 'Payment Complete' ? 'bg-blue-100 text-blue-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
+                            <span className={`inline-block px-3 py-1 rounded-full text-sm ${currentPayment.status === 'New' ? 'bg-orange-100 text-orange-800' :
+                                currentPayment.status === 'Pending Approval' ? 'bg-orange-100 text-orange-800' :
+                                  currentPayment.status === 'On Hold' ? 'bg-yellow-100 text-yellow-800' :
+                                    currentPayment.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                                      currentPayment.status === 'Payment Complete' ? 'bg-blue-100 text-blue-800' :
+                                        'bg-red-100 text-red-800'
+                              }`}>
                               {currentPayment.status}
                             </span>
                           </div>
@@ -607,76 +601,75 @@ export function PaymentsPanel({
                     {/* Receipt Attachment Section */}
                     <div className="mt-4 pt-4 border-t border-gray-200">
                       <label className="block text-sm text-gray-600 mb-2">Receipts ({uploadedFiles.length})</label>
-                        {!isViewMode ? (
-                          <div
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                            className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
-                              isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
+                      {!isViewMode ? (
+                        <div
+                          onDragOver={handleDragOver}
+                          onDragLeave={handleDragLeave}
+                          onDrop={handleDrop}
+                          className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
                             }`}
-                          >
-                            <Upload className="mx-auto mb-2 text-gray-400" size={24} />
-                            <p className="text-sm text-gray-600 mb-1">
-                              Drag and drop files here, or{' '}
-                              <label className="text-blue-600 hover:underline cursor-pointer">
-                                browse
-                                <input
-                                  type="file"
-                                  multiple
-                                  className="hidden"
-                                  onChange={(e) => handleFileUpload(e.target.files)}
-                                />
-                              </label>
-                            </p>
-                            <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB each</p>
-                          </div>
-                        ) : uploadedFiles.length === 0 ? (
-                          <p className="text-gray-500 text-sm">No receipts attached</p>
-                        ) : null}
-                        
-                        {/* Uploaded Files List */}
-                        {uploadedFiles.length > 0 && (
-                          <div className="mt-3 space-y-2">
-                            {uploadedFiles.map((file) => (
-                              <div key={file.id} className="bg-white border border-gray-200 rounded-lg p-2">
-                                <div className="flex items-start gap-2">
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-                                    <p className="text-xs text-gray-500">{formatFileSize(file.size)} • {file.uploadDate}</p>
-                                    {editingFileNotes === file.id ? (
-                                      <input
-                                        type="text"
-                                        value={file.notes}
-                                        onChange={(e) => updateFileNotes(file.id, e.target.value)}
-                                        onBlur={() => setEditingFileNotes(null)}
-                                        placeholder="Add notes..."
-                                        className="mt-1 w-full text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                        autoFocus
-                                      />
-                                    ) : (
-                                      <p 
-                                        onClick={() => !isViewMode && setEditingFileNotes(file.id)}
-                                        className={`text-xs mt-1 ${file.notes ? 'text-gray-600' : 'text-gray-400 italic'} ${!isViewMode && 'cursor-pointer hover:text-gray-800'}`}
-                                      >
-                                        {file.notes || 'Click to add notes...'}
-                                      </p>
-                                    )}
-                                  </div>
-                                  {!isViewMode && (
-                                    <button
-                                      onClick={() => removeFile(file.id)}
-                                      className="p-1 text-red-600 hover:bg-red-50 rounded"
-                                      title="Remove file"
+                        >
+                          <Upload className="mx-auto mb-2 text-gray-400" size={24} />
+                          <p className="text-sm text-gray-600 mb-1">
+                            Drag and drop files here, or{' '}
+                            <label className="text-blue-600 hover:underline cursor-pointer">
+                              browse
+                              <input
+                                type="file"
+                                multiple
+                                className="hidden"
+                                onChange={(e) => handleFileUpload(e.target.files)}
+                              />
+                            </label>
+                          </p>
+                          <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB each</p>
+                        </div>
+                      ) : uploadedFiles.length === 0 ? (
+                        <p className="text-gray-500 text-sm">No receipts attached</p>
+                      ) : null}
+
+                      {/* Uploaded Files List */}
+                      {uploadedFiles.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          {uploadedFiles.map((file) => (
+                            <div key={file.id} className="bg-white border border-gray-200 rounded-lg p-2">
+                              <div className="flex items-start gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                                  <p className="text-xs text-gray-500">{formatFileSize(file.size)} • {file.uploadDate}</p>
+                                  {editingFileNotes === file.id ? (
+                                    <input
+                                      type="text"
+                                      value={file.notes}
+                                      onChange={(e) => updateFileNotes(file.id, e.target.value)}
+                                      onBlur={() => setEditingFileNotes(null)}
+                                      placeholder="Add notes..."
+                                      className="mt-1 w-full text-xs px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                      autoFocus
+                                    />
+                                  ) : (
+                                    <p
+                                      onClick={() => !isViewMode && setEditingFileNotes(file.id)}
+                                      className={`text-xs mt-1 ${file.notes ? 'text-gray-600' : 'text-gray-400 italic'} ${!isViewMode && 'cursor-pointer hover:text-gray-800'}`}
                                     >
-                                      <Trash2 size={14} />
-                                    </button>
+                                      {file.notes || 'Click to add notes...'}
+                                    </p>
                                   )}
                                 </div>
+                                {!isViewMode && (
+                                  <button
+                                    onClick={() => removeFile(file.id)}
+                                    className="p-1 text-red-600 hover:bg-red-50 rounded"
+                                    title="Remove file"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                )}
                               </div>
-                            ))}
-                          </div>
-                        )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Tax Calculation Line Item */}
@@ -714,10 +707,10 @@ export function PaymentsPanel({
                           <label className="block text-gray-700 mb-2">
                             Miles Driven
                           </label>
-                          <input 
-                            type="number" 
-                            step="1" 
-                            placeholder="0" 
+                          <input
+                            type="number"
+                            step="1"
+                            placeholder="0"
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={mileage}
                             onChange={(e) => setMileage(parseFloat(e.target.value) || 0)}
@@ -730,10 +723,10 @@ export function PaymentsPanel({
                           </label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                            <input 
-                              type="number" 
-                              step="0.01" 
-                              placeholder="0.67" 
+                            <input
+                              type="number"
+                              step="0.01"
+                              placeholder="0.67"
                               className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               value={mileageRate}
                               onChange={(e) => setMileageRate(parseFloat(e.target.value) || 0.67)}
@@ -779,10 +772,10 @@ export function PaymentsPanel({
                           <label className="block text-gray-700 mb-2">
                             Tax Rate (%)
                           </label>
-                          <input 
-                            type="number" 
-                            step="0.01" 
-                            placeholder="0.00" 
+                          <input
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={taxRate}
                             onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
@@ -821,7 +814,7 @@ export function PaymentsPanel({
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
-                    <button 
+                    <button
                       type="button"
                       onClick={onClose}
                       className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
@@ -829,7 +822,7 @@ export function PaymentsPanel({
                       {isViewMode ? 'Close' : 'Cancel'}
                     </button>
                     {!isViewMode && (
-                      <button 
+                      <button
                         type="submit"
                         onClick={(e) => {
                           e.preventDefault();
@@ -859,14 +852,14 @@ export function PaymentsPanel({
                         <p className="text-sm text-gray-500">Select recipient and associated study</p>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       {/* Requester Field */}
                       <div className="md:col-span-3">
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">
                           Requester <span className="text-red-500">*</span>
                         </label>
-                        <select 
+                        <select
                           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={requester}
                           onChange={(e) => setRequester(e.target.value)}
@@ -883,7 +876,7 @@ export function PaymentsPanel({
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">
                           Recipient Type <span className="text-red-500">*</span>
                         </label>
-                        <select 
+                        <select
                           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={recipientType}
                           onChange={(e) => {
@@ -899,7 +892,7 @@ export function PaymentsPanel({
                           <option value="Third-Party/Other">Third-Party/Other</option>
                         </select>
                       </div>
-                      
+
                       {recipientType === 'Participant' ? (
                         <>
                           <div className="md:col-span-2 relative">
@@ -944,7 +937,7 @@ export function PaymentsPanel({
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
                               Study or Program <span className="text-red-500">*</span>
                             </label>
-                            <select 
+                            <select
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               value={selectedStudy}
                               onChange={(e) => setSelectedStudy(e.target.value)}
@@ -970,7 +963,7 @@ export function PaymentsPanel({
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
                               Caregiver Name <span className="text-red-500">*</span>
                             </label>
-                            <input 
+                            <input
                               type="text"
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               placeholder="Enter caregiver name"
@@ -982,7 +975,7 @@ export function PaymentsPanel({
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
                               Associated Participant <span className="text-red-500">*</span>
                             </label>
-                            <select 
+                            <select
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               defaultValue=""
                             >
@@ -997,7 +990,7 @@ export function PaymentsPanel({
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
                               Study or Program <span className="text-red-500">*</span>
                             </label>
-                            <select 
+                            <select
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               value={selectedStudy}
                               onChange={(e) => setSelectedStudy(e.target.value)}
@@ -1015,7 +1008,7 @@ export function PaymentsPanel({
                           <label className="block text-sm font-medium text-gray-700 mb-1.5">
                             Recipient Name <span className="text-red-500">*</span>
                           </label>
-                          <input 
+                          <input
                             type="text"
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Enter recipient name"
@@ -1024,12 +1017,12 @@ export function PaymentsPanel({
                           />
                         </div>
                       )}
-                      
+
                       <div className="md:col-span-2">
                         <label className="block text-gray-700 mb-2">
                           Request Type <span className="text-red-500">*</span>
                         </label>
-                        <select 
+                        <select
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={requestType}
                           onChange={(e) => {
@@ -1052,7 +1045,7 @@ export function PaymentsPanel({
                           <label className="block text-gray-700 mb-2">
                             Payment Schedule <span className="text-red-500">*</span>
                           </label>
-                          <select 
+                          <select
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={selectedPaymentSchedule}
                             onChange={(e) => {
@@ -1086,14 +1079,14 @@ export function PaymentsPanel({
                   {/* Section 2 & 3 would continue here... */}
                   {/* Placeholder for submission button */}
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
-                    <button 
+                    <button
                       type="button"
                       onClick={onClose}
                       className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                     >
                       Cancel
                     </button>
-                    <button 
+                    <button
                       type="submit"
                       onClick={(e) => {
                         e.preventDefault();

@@ -1,0 +1,12 @@
+﻿components/Participants.tsx(2,139): error TS6133: 'ArrowRight' is declared but its value is never read.
+components/Participants.tsx(2,151): error TS6133: 'ArrowLeft' is declared but its value is never read.
+components/Participants.tsx(22,27): error TS6133: 'setSelectedStudies' is declared but its value is never read.
+components/Participants.tsx(24,10): error TS6133: 'currentStudies' is declared but its value is never read.
+components/Participants.tsx(25,10): error TS6133: 'availableStudies' is declared but its value is never read.
+components/Participants.tsx(25,28): error TS6133: 'setAvailableStudies' is declared but its value is never read.
+components/Participants.tsx(26,10): error TS6133: 'selectedStudyForConsent' is declared but its value is never read.
+components/Participants.tsx(26,35): error TS6133: 'setSelectedStudyForConsent' is declared but its value is never read.
+components/Participants.tsx(363,20): error TS6133: 'studies' is declared but its value is never read.
+components/Participants.tsx(763,42): error TS6133: 'e' is declared but its value is never read.
+components/Participants.tsx(782,42): error TS6133: 'e' is declared but its value is never read.
+components/ui/sonner.tsx(3,26): error TS2307: Cannot find module 'next-themes' or its corresponding type declarations.

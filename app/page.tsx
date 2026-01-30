@@ -38,7 +38,7 @@ export default function Home() {
     if (currentPage.startsWith('reports')) {
       return <Reports reportType={currentPage} />;
     }
-    
+
     switch (currentPage) {
       case 'dashboard':
         return <Dashboard />;
@@ -71,8 +71,7 @@ export default function Home() {
   return (
     <div className="flex h-screen bg-gray-50">
       <div className="flex flex-col flex-1">
-        <Header 
-          currentPage={currentPage} 
+        <Header
           onNavigate={setCurrentPage}
           isSidebarCollapsed={isSidebarCollapsed}
           onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -82,7 +81,6 @@ export default function Home() {
             currentPage={currentPage}
             onNavigate={setCurrentPage}
             isCollapsed={isSidebarCollapsed}
-            onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           />
           <main className="flex-1 overflow-y-auto p-6">
             {renderPage()}

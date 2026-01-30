@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Search, Plus, Filter, DollarSign, Check, X, Edit, Archive, Eye, Download, ChevronDown, ChevronUp, FileSpreadsheet, Calendar, Info, RotateCcw, Play, Zap, History, UserCheck, Clock, CheckCircle2, XCircle, Users, AlertCircle } from 'lucide-react';
+import { Search, Plus, Filter, DollarSign, X, Edit, Eye, ChevronDown, ChevronUp, FileSpreadsheet, Zap, History, UserCheck, Clock, CheckCircle2, XCircle, Users, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { PaymentsPanel } from './PaymentsPanel';
-import { PaymentSchedulePanel } from './PaymentSchedulePanel';
 
 export function Payments() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,11 +10,8 @@ export function Payments() {
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showExportModal, setShowExportModal] = useState(false);
-  const [showSchedulePanel, setShowSchedulePanel] = useState(false);
   const [showKPIs, setShowKPIs] = useState(false);
   const [editingPayment, setEditingPayment] = useState<any>(null);
-  const [deletingPayment, setDeletingPayment] = useState<any>(null);
   const [viewingPayment, setViewingPayment] = useState<any>(null);
   const [reviewingPayment, setReviewingPayment] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('details');
@@ -68,17 +64,17 @@ export function Payments() {
 
   const filteredReimbursements = queueRequests.filter(reimbursement => {
     const matchesSearch = reimbursement.participantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         reimbursement.participantId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         reimbursement.study.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         reimbursement.requestId.toLowerCase().includes(searchTerm.toLowerCase());
+      reimbursement.participantId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reimbursement.study.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reimbursement.requestId.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRequestType = filterRequestType === 'all' || reimbursement.requestType === filterRequestType;
     const matchesReimbursementType = filterReimbursementType === 'all' || reimbursement.type === filterReimbursementType;
-    
+
     // Date range filtering based on Request Date
     const requestDate = new Date(reimbursement.date);
     const matchesDateFrom = !filterDateFrom || requestDate >= new Date(filterDateFrom);
     const matchesDateTo = !filterDateTo || requestDate <= new Date(filterDateTo);
-    
+
     return matchesSearch && matchesRequestType && matchesReimbursementType && matchesDateFrom && matchesDateTo;
   });
 
@@ -170,9 +166,6 @@ export function Payments() {
     setShowAutoApproveModal(false);
   };
 
-  const isEditMode = editingPayment !== null;
-  const isViewMode = viewingPayment !== null && editingPayment === null;
-  const showPanel = showAddModal || editingPayment || viewingPayment;
 
   const exportToExcel = () => {
     // Implement export to Excel logic here
@@ -196,7 +189,7 @@ export function Payments() {
 
         {/* Right Side - Action Buttons */}
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setShowKPIs(!showKPIs)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title={showKPIs ? 'Hide Key Performance Indicators' : 'Show Key Performance Indicators'}
@@ -267,26 +260,24 @@ export function Payments() {
             {/* My Requests Tab - First with distinct styling */}
             <button
               onClick={() => setActiveQueue('myRequests')}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                activeQueue === 'myRequests'
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${activeQueue === 'myRequests'
                   ? 'border-ku-blue text-ku-blue bg-blue-50'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
+                }`}
             >
               <Edit size={18} />
               My Requests
             </button>
-            
+
             {/* Divider */}
             <div className="w-px bg-gray-300 my-3"></div>
-            
+
             <button
               onClick={() => setActiveQueue('unassigned')}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                activeQueue === 'unassigned'
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${activeQueue === 'unassigned'
                   ? 'border-orange-500 text-orange-600'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
+                }`}
             >
               <Clock size={18} />
               Unassigned Queue
@@ -298,11 +289,10 @@ export function Payments() {
             </button>
             <button
               onClick={() => setActiveQueue('myQueue')}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                activeQueue === 'myQueue'
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${activeQueue === 'myQueue'
                   ? 'border-ku-blue text-ku-blue'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
+                }`}
             >
               <UserCheck size={18} />
               My Review Queue
@@ -314,11 +304,10 @@ export function Payments() {
             </button>
             <button
               onClick={() => setActiveQueue('teamQueue')}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                activeQueue === 'teamQueue'
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${activeQueue === 'teamQueue'
                   ? 'border-purple-500 text-purple-600'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
+                }`}
             >
               <Users size={18} />
               Team Queue
@@ -330,11 +319,10 @@ export function Payments() {
             </button>
             <button
               onClick={() => setActiveQueue('needsReview')}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                activeQueue === 'needsReview'
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${activeQueue === 'needsReview'
                   ? 'border-red-500 text-red-600'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
+                }`}
             >
               <AlertCircle size={18} />
               Needs Review
@@ -346,11 +334,10 @@ export function Payments() {
             </button>
             <button
               onClick={() => setActiveQueue('approved')}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                activeQueue === 'approved'
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium transition-colors whitespace-nowrap ${activeQueue === 'approved'
                   ? 'border-green-500 text-green-600'
                   : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-              }`}
+                }`}
             >
               <CheckCircle2 size={18} />
               Approved
@@ -376,7 +363,7 @@ export function Payments() {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Filter size={20} className="text-gray-400" />
               <select
@@ -399,7 +386,7 @@ export function Payments() {
                 <option value="Parking">Parking</option>
                 <option value="Meal">Meal</option>
               </select>
-              
+
               <div className="flex items-center gap-2">
                 <label htmlFor="dateFrom" className="text-sm text-gray-700 whitespace-nowrap">From:</label>
                 <input
@@ -410,7 +397,7 @@ export function Payments() {
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <label htmlFor="dateTo" className="text-sm text-gray-700 whitespace-nowrap">To:</label>
                 <input
@@ -522,11 +509,10 @@ export function Payments() {
                     </td>
                   )}
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      request.priority === 'high' ? 'bg-red-100 text-red-800' :
-                      request.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${request.priority === 'high' ? 'bg-red-100 text-red-800' :
+                        request.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                      }`}>
                       {request.priority === 'high' ? '🔴' : request.priority === 'normal' ? '🔵' : '⚪'} {request.priority.toUpperCase()}
                     </span>
                   </td>
@@ -539,23 +525,21 @@ export function Payments() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">{request.requester}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      request.requestType === 'Payment' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs ${request.requestType === 'Payment' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
+                      }`}>
                       {request.requestType}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">{request.study}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">${request.amount.toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      request.status === 'New' ? 'bg-gray-100 text-gray-800' :
-                      request.status === 'Pending Approval' ? 'bg-yellow-100 text-yellow-800' :
-                      request.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                      request.status === 'Payment Complete' ? 'bg-blue-100 text-blue-800' :
-                      request.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-orange-100 text-orange-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${request.status === 'New' ? 'bg-gray-100 text-gray-800' :
+                        request.status === 'Pending Approval' ? 'bg-yellow-100 text-yellow-800' :
+                          request.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                            request.status === 'Payment Complete' ? 'bg-blue-100 text-blue-800' :
+                              request.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                                'bg-orange-100 text-orange-800'
+                      }`}>
                       {request.status}
                     </span>
                   </td>
@@ -590,7 +574,7 @@ export function Payments() {
                           </button>
                         </>
                       )}
-                      
+
                       {/* My Queue Actions */}
                       {activeQueue === 'myQueue' && (
                         <button
@@ -601,7 +585,7 @@ export function Payments() {
                           Review
                         </button>
                       )}
-                      
+
                       {/* My Requests Actions - Edit only if status is New */}
                       {activeQueue === 'myRequests' && request.status === 'New' && (
                         <button
@@ -613,18 +597,18 @@ export function Payments() {
                           Edit
                         </button>
                       )}
-                      
+
                       {/* Common Actions */}
-                      <button 
+                      <button
                         onClick={() => setViewingPayment(request)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded" 
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded"
                         title="View Details"
                       >
                         <Eye size={16} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => setViewingHistory(request)}
-                        className="p-2 text-purple-600 hover:bg-purple-50 rounded" 
+                        className="p-2 text-purple-600 hover:bg-purple-50 rounded"
                         title="Workflow History"
                       >
                         <History size={16} />
@@ -636,7 +620,7 @@ export function Payments() {
             </tbody>
           </table>
         </div>
-        
+
         {filteredReimbursements.length === 0 && (
           <div className="text-center py-12 text-gray-500">
             <p className="text-lg">No requests in this queue</p>
@@ -701,7 +685,7 @@ export function Payments() {
                   <p className="text-sm text-gray-600">Assign this request to yourself</p>
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <p className="mb-2"><span className="text-gray-600 text-sm">Request ID:</span> <span className="font-medium">{claimingPayment.requestId}</span></p>
                 <p className="mb-2"><span className="text-gray-600 text-sm">Participant:</span> <span className="font-medium">{claimingPayment.participantName}</span></p>
@@ -716,13 +700,13 @@ export function Payments() {
               </div>
 
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setClaimingPayment(null)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => handleClaimRequest(claimingPayment)}
                   className="flex-1 px-6 py-3 bg-ku-blue text-white rounded-lg hover:bg-ku-blue-dark font-medium"
                 >
@@ -749,7 +733,7 @@ export function Payments() {
                   <p className="text-sm text-gray-600">Assign this request to a colleague</p>
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <p className="mb-2"><span className="text-gray-600 text-sm">Request ID:</span> <span className="font-medium">{assigningPayment.requestId}</span></p>
                 <p className="mb-2"><span className="text-gray-600 text-sm">Participant:</span> <span className="font-medium">{assigningPayment.participantName}</span></p>
@@ -772,13 +756,13 @@ export function Payments() {
               </div>
 
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setAssigningPayment(null)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => handleAssignRequest(assigningPayment, 'Dr. Michael Torres')}
                   className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium"
                 >
@@ -857,13 +841,13 @@ export function Payments() {
 
               {/* Decision Buttons */}
               <div className="flex gap-3 pt-4 border-t border-gray-200">
-                <button 
+                <button
                   onClick={() => setReviewingPayment(null)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     toast.error('Request rejected', {
                       description: `${reviewingPayment.requestId} has been rejected`
@@ -875,7 +859,7 @@ export function Payments() {
                   <XCircle size={18} />
                   Reject
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     toast.success('Request approved successfully!', {
                       description: `${reviewingPayment.requestId} for $${reviewingPayment.amount.toFixed(2)}`
@@ -908,7 +892,7 @@ export function Payments() {
                   <p className="text-sm text-gray-600">Assign {selectedRequests.length} request(s) to a colleague</p>
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <p className="text-sm font-medium text-gray-700 mb-2">Selected Requests:</p>
                 <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -934,7 +918,7 @@ export function Payments() {
 
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Assign to:</label>
-                <select 
+                <select
                   id="bulkAssignee"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -950,13 +934,13 @@ export function Payments() {
               </div>
 
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setShowBulkAssignModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     const assignee = (document.getElementById('bulkAssignee') as HTMLSelectElement)?.value;
                     if (assignee) {
@@ -990,7 +974,7 @@ export function Payments() {
                   <p className="text-sm text-gray-600">Approve {selectedRequests.length} request(s)</p>
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <p className="text-sm font-medium text-gray-700 mb-2">Selected Requests:</p>
                 <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -1021,13 +1005,13 @@ export function Payments() {
               </div>
 
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setShowBulkApproveModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={handleBulkApprove}
                   className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center justify-center gap-2"
                 >
@@ -1055,7 +1039,7 @@ export function Payments() {
                   <p className="text-sm text-gray-600">Automatically approve {selectedRequests.length} request(s)</p>
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <p className="text-sm font-medium text-gray-700 mb-2">Selected Requests:</p>
                 <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -1097,13 +1081,13 @@ export function Payments() {
               </div>
 
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setShowAutoApproveModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={handleAutoApprove}
                   className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center justify-center gap-2"
                 >
@@ -1152,24 +1136,22 @@ export function Payments() {
                   </div>
                   <div>
                     <p className="text-gray-600 mb-1">Current Status</p>
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      viewingHistory.status === 'New' ? 'bg-gray-100 text-gray-800' :
-                      viewingHistory.status === 'Pending Approval' ? 'bg-yellow-100 text-yellow-800' :
-                      viewingHistory.status === 'Approved' ? 'bg-green-100 text-green-800' :
-                      viewingHistory.status === 'Payment Complete' ? 'bg-blue-100 text-blue-800' :
-                      viewingHistory.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                      'bg-orange-100 text-orange-800'
-                    }`}>
+                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${viewingHistory.status === 'New' ? 'bg-gray-100 text-gray-800' :
+                        viewingHistory.status === 'Pending Approval' ? 'bg-yellow-100 text-yellow-800' :
+                          viewingHistory.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                            viewingHistory.status === 'Payment Complete' ? 'bg-blue-100 text-blue-800' :
+                              viewingHistory.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                                'bg-orange-100 text-orange-800'
+                      }`}>
                       {viewingHistory.status}
                     </span>
                   </div>
                   <div>
                     <p className="text-gray-600 mb-1">Priority</p>
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      viewingHistory.priority === 'high' ? 'bg-red-100 text-red-800' :
-                      viewingHistory.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${viewingHistory.priority === 'high' ? 'bg-red-100 text-red-800' :
+                        viewingHistory.priority === 'normal' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                      }`}>
                       {viewingHistory.priority === 'high' ? '🔴' : viewingHistory.priority === 'normal' ? '🔵' : '⚪'} {viewingHistory.priority.toUpperCase()}
                     </span>
                   </div>
@@ -1179,12 +1161,12 @@ export function Payments() {
               {/* Timeline */}
               <div className="space-y-4">
                 <h3 className="font-semibold text-gray-800 mb-4">Workflow Timeline</h3>
-                
+
                 {/* Timeline Items */}
                 <div className="relative">
                   {/* Vertical Line */}
                   <div className="absolute left-5 top-8 bottom-0 w-0.5 bg-gray-200"></div>
-                  
+
                   {/* Timeline Events */}
                   <div className="space-y-6">
                     {/* Request Created */}
@@ -1349,7 +1331,7 @@ export function Payments() {
 
             {/* Modal Footer */}
             <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4">
-              <button 
+              <button
                 onClick={() => setViewingHistory(null)}
                 className="w-full px-6 py-2.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium"
               >

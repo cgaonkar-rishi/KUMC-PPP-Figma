@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Plus, Edit, Eye, Filter, DollarSign, ChevronDown, ChevronUp, X, Upload, FileSpreadsheet, Building2, Trash2 } from 'lucide-react';
+import { Search, Plus, Edit, Eye, Filter, DollarSign, ChevronDown, ChevronUp, X, Upload, FileSpreadsheet, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function Funding() {
@@ -8,48 +8,15 @@ export function Funding() {
   const [showKPIs, setShowKPIs] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingFunding, setEditingFunding] = useState<any>(null);
-  const [viewingFunding, setViewingFunding] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('details');
-  const [editingAllocation, setEditingAllocation] = useState<number | null>(null);
-  const [showAddStudyModal, setShowAddStudyModal] = useState(false);
-  const [studiesSearchTerm, setStudiesSearchTerm] = useState('');
-  const [studiesFilterStatus, setStudiesFilterStatus] = useState('all');
-  const [showAddStudyToFundingModal, setShowAddStudyToFundingModal] = useState(false);
 
-  // Mock study allocations data for each funding source
-  const getStudyAllocations = (fundingId: number) => {
-    const allocations: Record<number, any[]> = {
-      1: [
-        { id: 1, studyId: 'CHS-2026-001', studyName: 'Cardiac Health Screening Phase 1', allocatedAmount: 1200000, billingAccountCode: 'ACC-2026-001', status: 'Active' },
-        { id: 2, studyId: 'CHS-2026-002', studyName: 'Cardiac Health Screening Phase 2', allocatedAmount: 800000, billingAccountCode: 'ACC-2026-002', status: 'Active' },
-      ],
-      2: [
-        { id: 1, studyId: 'NDR-2025-042', studyName: 'Neurological Disorder Research', allocatedAmount: 1800000, billingAccountCode: 'ACC-2025-042', status: 'Active' },
-      ],
-      3: [
-        { id: 1, studyId: 'PNS-2026-008', studyName: 'Pediatric Nutrition Study', allocatedAmount: 950000, billingAccountCode: 'ACC-2026-008', status: 'Active' },
-      ],
-      4: [
-        { id: 1, studyId: 'DPT-2025-019', studyName: 'Diabetes Prevention Trial - Adult', allocatedAmount: 1800000, billingAccountCode: 'ACC-2025-019', status: 'Active' },
-        { id: 2, studyId: 'DPT-2025-020', studyName: 'Diabetes Prevention Trial - Pediatric', allocatedAmount: 1100000, billingAccountCode: 'ACC-2025-020', status: 'Active' },
-      ],
-      5: [
-        { id: 1, studyId: 'CIS-2025-055', studyName: 'Cancer Immunotherapy Study', allocatedAmount: 4500000, billingAccountCode: 'ACC-2025-055', status: 'Active' },
-      ],
-      6: [],
-    };
-    return allocations[fundingId] || [];
-  };
 
-  const [studyAllocations, setStudyAllocations] = useState<any[]>([]);
+
 
   // Mock funding source data
   const fundingSources = [
-    { 
-      id: 1, 
-      fundingNumber: 'NIH-R01-2025-001', 
+    {
+      id: 1,
+      fundingNumber: 'NIH-R01-2025-001',
       fundingSource: 'Cardiovascular Research Grant',
       sponsor: 'NIH',
       piName: 'Dr. Sarah Williams',
@@ -63,9 +30,9 @@ export function Funding() {
       fundingAgency: 'National Institutes of Health',
       projectPeriod: '60 months'
     },
-    { 
-      id: 2, 
-      fundingNumber: 'NSF-2024-456', 
+    {
+      id: 2,
+      fundingNumber: 'NSF-2024-456',
       fundingSource: 'Neurological Disorders Initiative',
       sponsor: 'NSF',
       piName: 'Dr. James Anderson',
@@ -79,9 +46,9 @@ export function Funding() {
       fundingAgency: 'National Science Foundation',
       projectPeriod: '36 months'
     },
-    { 
-      id: 3, 
-      fundingNumber: 'CDC-2025-789', 
+    {
+      id: 3,
+      fundingNumber: 'CDC-2025-789',
       fundingSource: 'Pediatric Nutrition Program',
       sponsor: 'CDC',
       piName: 'Dr. Robert Taylor',
@@ -95,9 +62,9 @@ export function Funding() {
       fundingAgency: 'Centers for Disease Control',
       projectPeriod: '36 months'
     },
-    { 
-      id: 4, 
-      fundingNumber: 'ADA-2024-321', 
+    {
+      id: 4,
+      fundingNumber: 'ADA-2024-321',
       fundingSource: 'Diabetes Prevention Research',
       sponsor: 'ADA',
       piName: 'Dr. Michael Chen',
@@ -111,9 +78,9 @@ export function Funding() {
       fundingAgency: 'American Diabetes Association',
       projectPeriod: '60 months'
     },
-    { 
-      id: 5, 
-      fundingNumber: 'NCI-2023-654', 
+    {
+      id: 5,
+      fundingNumber: 'NCI-2023-654',
       fundingSource: 'Cancer Immunotherapy Studies',
       sponsor: 'NCI',
       piName: 'Dr. Lisa Brown',
@@ -127,9 +94,9 @@ export function Funding() {
       fundingAgency: 'National Cancer Institute',
       projectPeriod: '72 months'
     },
-    { 
-      id: 6, 
-      fundingNumber: 'NIH-R21-2026-099', 
+    {
+      id: 6,
+      fundingNumber: 'NIH-R21-2026-099',
       fundingSource: 'Sleep Research Initiative',
       sponsor: 'NIH',
       piName: 'Dr. Maria Martinez',
@@ -147,25 +114,13 @@ export function Funding() {
 
   const filteredFunding = fundingSources.filter(funding => {
     const matchesSearch = funding.fundingNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         funding.fundingSource.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         funding.sponsor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         funding.piName.toLowerCase().includes(searchTerm.toLowerCase());
+      funding.fundingSource.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      funding.sponsor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      funding.piName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || funding.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
-  const handleClosePanel = () => {
-    setShowAddModal(false);
-    setEditingFunding(null);
-    setViewingFunding(null);
-    setActiveTab('details');
-  };
-
-  const isEditMode = editingFunding !== null;
-  const isViewMode = viewingFunding !== null && editingFunding === null;
-  const showPanel = showAddModal || editingFunding || viewingFunding;
-
-  const currentFunding = isEditMode ? editingFunding : isViewMode ? viewingFunding : null;
 
   return (
     <div className="space-y-6">
@@ -184,29 +139,28 @@ export function Funding() {
 
         {/* Right Side - Action Buttons */}
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setShowKPIs(!showKPIs)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title={showKPIs ? 'Hide Key Performance Indicators' : 'Show Key Performance Indicators'}
           >
             {showKPIs ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
-          <button 
+          <button
             onClick={() => setShowUploadModal(true)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title="Upload Monthly Funding Data"
           >
             <Upload size={20} />
           </button>
-          <button 
+          <button
             onClick={() => setShowExportModal(true)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-green-600 rounded-lg transition-all shadow-sm"
             title="Export Funding to Excel"
           >
             <FileSpreadsheet size={20} />
           </button>
-          <button 
-            onClick={() => setShowAddModal(true)}
+          <button
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 font-medium shadow-sm transition-all"
             title="Add New Funding"
           >
@@ -263,7 +217,7 @@ export function Funding() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Filter size={20} className="text-gray-400" />
             <select
@@ -303,10 +257,7 @@ export function Funding() {
                 <tr key={funding.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium">{funding.fundingNumber}</td>
                   <td className="px-6 py-4">
-                    <button 
-                      onClick={() => {
-                        setViewingFunding(funding);
-                      }}
+                    <button
                       className="text-blue-600 hover:underline text-left"
                     >
                       {funding.fundingSource}
@@ -325,27 +276,24 @@ export function Funding() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      funding.status === 'Active' ? 'bg-green-100 text-green-800' :
+                    <span className={`px-3 py-1 rounded-full text-sm ${funding.status === 'Active' ? 'bg-green-100 text-green-800' :
                       funding.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                      funding.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                        funding.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                      }`}>
                       {funding.status}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setViewingFunding(funding)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded" 
+                      <button
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded"
                         title="View"
                       >
                         <Eye size={16} />
                       </button>
-                      <button 
-                        onClick={() => setEditingFunding(funding)}
-                        className="p-2 text-green-600 hover:bg-green-50 rounded" 
+                      <button
+                        className="p-2 text-green-600 hover:bg-green-50 rounded"
                         title="Edit"
                       >
                         <Edit size={16} />
@@ -369,19 +317,19 @@ export function Funding() {
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                 <Upload className="mx-auto text-gray-400 mb-2" size={48} />
                 <p className="text-sm text-gray-600 mb-2">Upload monthly funding data file</p>
                 <p className="text-xs text-gray-500">Excel (.xlsx) or CSV format</p>
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   accept=".xlsx,.xls,.csv"
                   className="mt-4"
                 />
               </div>
-              
+
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-gray-700">
                   <strong>Note:</strong> Upload monthly funding billing data to keep funding information up to date and connect studies to funding sources for billing purposes.
@@ -389,13 +337,13 @@ export function Funding() {
               </div>
 
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setShowUploadModal(false)}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     toast.success('Funding data uploaded successfully');
                     setShowUploadModal(false);
@@ -474,13 +422,13 @@ export function Funding() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => setShowExportModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     toast.success('Funding data exported successfully');
                     setShowExportModal(false);

@@ -1,18 +1,17 @@
-import { Bell, Mail, User, Settings, LogOut, UserCircle, FlaskConical, Shield, FileText, ChevronRight, DollarSign, UserRound, Calendar as CalendarIcon, LayoutDashboard, HelpCircle, Building2, MapPin, ChevronLeft, Menu } from 'lucide-react';
+import { Bell, User, Settings, LogOut, UserCircle, Shield, ChevronRight, DollarSign, LayoutDashboard, HelpCircle, Building2, ChevronLeft } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
-  currentPage: string;
   onNavigate?: (page: string) => void;
   isSidebarCollapsed?: boolean;
   onToggleSidebar?: () => void;
 }
 
-export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSidebar }: HeaderProps) {
+export function Header({ onNavigate, isSidebarCollapsed, onToggleSidebar }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-  
+
   const notificationsRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -59,83 +58,6 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const getPageTitle = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return 'Dashboard';
-      case 'studies':
-        return 'Studies';
-      case 'funding':
-        return 'Funding and Grants';
-      case 'organizations':
-        return 'Organizations & Locations';
-      case 'participants':
-        return 'Participants';
-      case 'visits':
-        return 'Visits';
-      case 'payments':
-        return 'Payments';
-      case 'reports':
-        return 'Reports';
-      case 'settings':
-        return 'Settings';
-      default:
-        return 'Dashboard';
-    }
-  };
-
-  const getPageSubtitle = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return 'Dashboard Overview';
-      case 'studies':
-        return 'Studies Management';
-      case 'funding':
-        return 'Funding Management';
-      case 'organizations':
-        return 'Organizations & Locations Management';
-      case 'participants':
-        return 'Participants Management';
-      case 'visits':
-        return 'Study Visits';
-      case 'payments':
-        return 'Participant Reimbursements';
-      case 'reports':
-        return 'Reports & Analytics';
-      case 'settings':
-        return 'System Settings';
-      default:
-        return 'Dashboard Overview';
-    }
-  };
-
-  const getPageIcon = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return DollarSign;
-      case 'studies':
-        return FlaskConical;
-      case 'funding':
-        return Building2;
-      case 'organizations':
-        return Building2;
-      case 'participants':
-        return UserRound;
-      case 'visits':
-        return CalendarIcon;
-      case 'payments':
-        return DollarSign;
-      case 'reports':
-        return FileText;
-      case 'settings':
-        return Settings;
-      default:
-        return LayoutDashboard;
-    }
-  };
-
-  const PageIcon = getPageIcon();
-  const iconBgColor = currentPage === 'payments' ? 'bg-green-600' : 'bg-ku-blue';
 
   return (
     <header className="bg-white border-b border-gray-200 flex items-center h-16">
@@ -156,7 +78,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
             </svg>
           </div>
         )}
-        <button 
+        <button
           onClick={onToggleSidebar}
           aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
@@ -178,9 +100,9 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
             </h1>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-4">
-          <button 
+          <button
             onClick={() => onNavigate?.('dashboard')}
             aria-label="Go to dashboard"
             className="p-2 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-all duration-200 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
@@ -189,7 +111,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
           </button>
 
           <div className="relative" ref={notificationsRef}>
-            <button 
+            <button
               onClick={() => setShowNotifications(!showNotifications)}
               aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
               aria-expanded={showNotifications}
@@ -209,7 +131,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
 
             {/* Notifications Panel */}
             {showNotifications && (
-              <div 
+              <div
                 role="region"
                 aria-label="Notifications panel"
                 className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
@@ -220,18 +142,16 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
                 </div>
                 <div className="max-h-96 overflow-y-auto">
                   {notifications.map((notification) => (
-                    <div 
-                      key={notification.id} 
-                      className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
-                        !notification.read ? 'bg-blue-50' : ''
-                      }`}
+                    <div
+                      key={notification.id}
+                      className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${!notification.read ? 'bg-blue-50' : ''
+                        }`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`w-2 h-2 rounded-full mt-2 ${
-                          notification.type === 'success' ? 'bg-green-500' :
+                        <div className={`w-2 h-2 rounded-full mt-2 ${notification.type === 'success' ? 'bg-green-500' :
                           notification.type === 'warning' ? 'bg-orange-500' :
-                          'bg-ku-blue'
-                        }`}></div>
+                            'bg-ku-blue'
+                          }`}></div>
                         <div className="flex-1">
                           <p className={`text-sm ${!notification.read ? 'font-medium' : ''}`}>
                             {notification.title}
@@ -271,7 +191,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
 
             {/* Settings Menu Panel */}
             {showSettingsMenu && (
-              <div 
+              <div
                 role="menu"
                 aria-label="Settings menu"
                 className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
@@ -317,9 +237,9 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
               </div>
             )}
           </div>
-          
+
           <div className="relative" ref={profileRef}>
-            <button 
+            <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
               aria-label="User profile menu"
               aria-expanded={showProfileMenu}
@@ -333,7 +253,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
 
             {/* Profile Menu Panel */}
             {showProfileMenu && (
-              <div 
+              <div
                 role="menu"
                 aria-label="User profile menu"
                 className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
@@ -358,7 +278,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
                     <Settings size={18} />
                     <span>Settings</span>
                   </button>
-                  <button 
+                  <button
                     onClick={() => onNavigate?.('sso')}
                     className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 text-gray-700"
                   >
@@ -367,7 +287,7 @@ export function Header({ currentPage, onNavigate, isSidebarCollapsed, onToggleSi
                   </button>
                 </div>
                 <div className="border-t border-gray-200 py-2">
-                  <button 
+                  <button
                     onClick={() => onNavigate?.('sso')}
                     className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 text-red-600"
                   >

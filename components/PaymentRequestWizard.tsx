@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, Check, User, Receipt, Upload, FileCheck, Plus, Trash2, FileText, X, Search, ChevronDown, ChevronUp, AlertTriangle, Clock } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Check, User, Receipt, FileCheck, Plus, Trash2, FileText, X, Search, ChevronDown, ChevronUp, AlertTriangle, Clock } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -33,7 +33,7 @@ interface PaymentRequestWizardProps {
 
 export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  
+
   // Step 1: Request Information
   const [recipientType, setRecipientType] = useState<'Participant' | 'Caregiver' | 'Third-Party/Other'>('Participant');
   const [participantSearch, setParticipantSearch] = useState('');
@@ -61,12 +61,10 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
   const [mileageRate, setMileageRate] = useState(0.67); // IRS standard mileage rate for 2024
   const [selectedStudyLocation, setSelectedStudyLocation] = useState('');
 
-  // Step 3: Receipts
-  const [isDragging, setIsDragging] = useState(false);
 
   // Expand/collapse state for step summaries
   const [expandedSteps, setExpandedSteps] = useState<{ [key: number]: boolean }>({});
-  
+
   // Cancel confirmation modal
   const [showCancelModal, setShowCancelModal] = useState(false);
 
@@ -122,7 +120,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
   });
 
   // Filter studies based on selected participant
-  const availableStudies = selectedParticipant 
+  const availableStudies = selectedParticipant
     ? allStudies.filter(study => selectedParticipant.studies.includes(study.id))
     : allStudies;
 
@@ -180,11 +178,11 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
 
       // Check if tax line item already exists
       const existingTaxItem = lineItems.find(item => item.type === 'Tax Withholding');
-      
+
       if (existingTaxItem) {
         // Update existing tax line item if amount changed
         if (existingTaxItem.amount !== -taxAmount) {
-          setLineItems(lineItems.map(item => 
+          setLineItems(lineItems.map(item =>
             item.type === 'Tax Withholding'
               ? { ...item, amount: -taxAmount, description: `Federal Tax Withholding (10% of $${subtotal.toFixed(2)})` }
               : item
@@ -235,7 +233,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
         return;
       }
     }
-    
+
     // Step 2 validation
     if (currentStep === 2) {
       if (lineItems.length === 0) {
@@ -297,7 +295,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
 
     if (editingItemId && editingItemId !== 'new') {
       // Update existing item
-      setLineItems(lineItems.map(item => 
+      setLineItems(lineItems.map(item =>
         item.id === editingItemId
           ? { ...item, description: newItemDescription, amount: parseFloat(newItemAmount), type: requestType === 'Payment' ? 'Payment' : newItemType }
           : item
@@ -339,7 +337,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
       toast.error('Cannot remove tax withholding line item');
       return;
     }
-    
+
     if (lineItems.length === 1) {
       toast.error('Cannot remove the last line item');
       return;
@@ -389,57 +387,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
     toast.success(`Calculated ${estimatedMiles} miles × $${mileageRate}/mile = $${calculatedAmount.toFixed(2)}`);
   };
 
-  const handleFileUpload = (itemId: string, files: FileList | null) => {
-    if (!files) return;
-    
-    const newFiles: UploadedFile[] = Array.from(files).map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      name: file.name,
-      size: file.size,
-      uploadDate: new Date().toLocaleDateString()
-    }));
-    
-    setLineItems(lineItems.map(item => 
-      item.id === itemId 
-        ? { ...item, receipts: [...item.receipts, ...newFiles] }
-        : item
-    ));
-    
-    toast.success(`${newFiles.length} receipt(s) uploaded`);
-  };
 
-  const removeReceipt = (itemId: string, receiptId: string) => {
-    setLineItems(lineItems.map(item =>
-      item.id === itemId
-        ? { ...item, receipts: item.receipts.filter(r => r.id !== receiptId) }
-        : item
-    ));
-    toast.success('Receipt removed');
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent, itemId: string) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFileUpload(itemId, e.dataTransfer.files);
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  };
 
   const calculateTotal = () => {
     return lineItems.reduce((sum, item) => sum + item.amount, 0);
@@ -512,7 +460,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
             const isActive = currentStep === step.number;
             const isCompleted = currentStep > step.number;
             const canExpand = isCompleted && currentStep !== step.number;
-            
+
             return (
               <div key={step.number} className="flex items-center flex-1">
                 <div className="flex flex-col items-center w-full">
@@ -532,15 +480,14 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                       </button>
                     )}
                     {!canExpand && <div className="w-6" />}
-                    
+
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
-                        isActive
-                          ? 'bg-ku-blue text-white'
-                          : isCompleted
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${isActive
+                        ? 'bg-ku-blue text-white'
+                        : isCompleted
                           ? 'bg-green-600 text-white'
                           : 'bg-gray-200 text-gray-600'
-                      }`}
+                        }`}
                     >
                       {isCompleted ? (
                         <Check className="h-5 w-5" />
@@ -548,7 +495,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                         <Icon className="h-5 w-5" />
                       )}
                     </div>
-                    
+
                     <div className="text-left flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className={`text-sm font-semibold truncate ${isActive ? 'text-ku-blue' : 'text-gray-700'}`}>
@@ -610,8 +557,8 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                 {/* Column 1: Recipient Type (always shown) */}
                 <div className="space-y-2">
                   <Label htmlFor="recipientType">Recipient Type *</Label>
-                  <Select 
-                    value={recipientType} 
+                  <Select
+                    value={recipientType}
                     onValueChange={(v: 'Participant' | 'Caregiver' | 'Third-Party/Other') => {
                       setRecipientType(v);
                       // Reset fields when changing type
@@ -728,7 +675,7 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                     {showParticipantDropdown && filteredParticipants.length > 0 && associatedParticipant && (
                       <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                         {allParticipants
-                          .filter(p => 
+                          .filter(p =>
                             p.name.toLowerCase().includes(associatedParticipant.toLowerCase()) ||
                             p.id.toLowerCase().includes(associatedParticipant.toLowerCase())
                           )
@@ -769,8 +716,8 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                     </SelectTrigger>
                     <SelectContent>
                       {availableStudies.map(s => (
-                        <SelectItem 
-                          key={s.id} 
+                        <SelectItem
+                          key={s.id}
                           value={s.id}
                           disabled={s.status === 'Study start' || s.status === 'Study completed' || s.status === 'Canceled/withdrawn'}
                           className={s.status !== 'Active' ? 'text-gray-400' : ''}
@@ -787,8 +734,8 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="requestType">Request Type *</Label>
-                  <Select 
-                    value={requestType} 
+                  <Select
+                    value={requestType}
                     onValueChange={(v: 'Payment' | 'Reimbursement') => {
                       setRequestType(v);
                       setSelectedPaymentSchedule('');
@@ -852,8 +799,8 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
               <div>
                 <h2 className="text-xl font-semibold">Line Items & Receipts</h2>
                 <p className="text-gray-600 mt-1">
-                  {requestType === 'Payment' 
-                    ? 'Add payment line items for scheduled visits and upload receipts as needed.' 
+                  {requestType === 'Payment'
+                    ? 'Add payment line items for scheduled visits and upload receipts as needed.'
                     : 'Add reimbursement expenses and upload supporting receipts.'}
                 </p>
               </div>
@@ -989,9 +936,9 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                     </div>
                   </div>
                   <div className="col-span-1 flex items-end">
-                    <Button 
+                    <Button
                       type="button"
-                      onClick={addLineItem} 
+                      onClick={addLineItem}
                       className="bg-ku-blue hover:bg-ku-blue-dark w-full"
                       size="sm"
                     >
@@ -1110,94 +1057,90 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
                     {lineItems.map((item) => {
                       const isTaxItem = item.type === 'Tax Withholding';
                       return (
-                      <tr key={item.id} className={isTaxItem ? "bg-orange-50 hover:bg-orange-100" : "hover:bg-gray-50"}>
-                        <td className="px-3 py-3 text-sm text-gray-900">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            isTaxItem ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'
-                          }`}>
-                            {isTaxItem ? 'Tax' : requestType}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3 text-sm text-gray-900">
-                          {item.type && (
-                            <span className={`px-2 py-1 text-xs rounded ${
-                              isTaxItem ? 'bg-orange-200 text-orange-900 font-semibold' : 'bg-gray-200 text-gray-700'
-                            }`}>
-                              {item.type}
+                        <tr key={item.id} className={isTaxItem ? "bg-orange-50 hover:bg-orange-100" : "hover:bg-gray-50"}>
+                          <td className="px-3 py-3 text-sm text-gray-900">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${isTaxItem ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'
+                              }`}>
+                              {isTaxItem ? 'Tax' : requestType}
                             </span>
-                          )}
-                          {!item.type && <span className="text-gray-400">—</span>}
-                        </td>
-                        <td className="px-3 py-3 text-sm text-gray-900">
-                          {isTaxItem && <Clock className="h-4 w-4 inline mr-1 text-orange-600" />}
-                          {item.description}
-                        </td>
-                        <td className={`px-3 py-3 text-sm text-right font-medium ${
-                          isTaxItem ? 'text-orange-900 font-bold' : 'text-gray-900'
-                        }`}>
-                          {isTaxItem && item.amount > 0 ? '-' : ''}${Math.abs(item.amount).toFixed(2)}
-                        </td>
-                        <td className="px-3 py-3">
-                          {isTaxItem ? (
-                            <span className="text-xs text-gray-400 italic">Auto-calculated</span>
-                          ) : (
-                            <Input
-                              type="text"
-                              value={item.notes || ''}
-                              onChange={(e) => {
-                                setLineItems(lineItems.map(li => 
-                                  li.id === item.id ? { ...li, notes: e.target.value } : li
-                                ));
-                              }}
-                              placeholder="Add notes..."
-                              className="text-xs"
-                            />
-                          )}
-                        </td>
-                        <td className="px-3 py-3">
-                          {isTaxItem ? (
-                            <span className="text-xs text-gray-400 italic">No receipt needed</span>
-                          ) : (
-                            <ReceiptDropZone
-                              files={item.receipts}
-                              onFilesChange={(newFiles) => {
-                                setLineItems(lineItems.map(li => 
-                                  li.id === item.id ? { ...li, receipts: newFiles } : li
-                                ));
-                              }}
-                              itemId={item.id}
-                            />
-                          )}
-                        </td>
-                        {!isTaxItem && (
+                          </td>
+                          <td className="px-3 py-3 text-sm text-gray-900">
+                            {item.type && (
+                              <span className={`px-2 py-1 text-xs rounded ${isTaxItem ? 'bg-orange-200 text-orange-900 font-semibold' : 'bg-gray-200 text-gray-700'
+                                }`}>
+                                {item.type}
+                              </span>
+                            )}
+                            {!item.type && <span className="text-gray-400">—</span>}
+                          </td>
+                          <td className="px-3 py-3 text-sm text-gray-900">
+                            {isTaxItem && <Clock className="h-4 w-4 inline mr-1 text-orange-600" />}
+                            {item.description}
+                          </td>
+                          <td className={`px-3 py-3 text-sm text-right font-medium ${isTaxItem ? 'text-orange-900 font-bold' : 'text-gray-900'
+                            }`}>
+                            {isTaxItem && item.amount > 0 ? '-' : ''}${Math.abs(item.amount).toFixed(2)}
+                          </td>
                           <td className="px-3 py-3">
-                            <div className="flex items-center justify-center gap-1">
-                              {requestType === 'Reimbursement' && (
+                            {isTaxItem ? (
+                              <span className="text-xs text-gray-400 italic">Auto-calculated</span>
+                            ) : (
+                              <Input
+                                type="text"
+                                value={item.notes || ''}
+                                onChange={(e) => {
+                                  setLineItems(lineItems.map(li =>
+                                    li.id === item.id ? { ...li, notes: e.target.value } : li
+                                  ));
+                                }}
+                                placeholder="Add notes..."
+                                className="text-xs"
+                              />
+                            )}
+                          </td>
+                          <td className="px-3 py-3">
+                            {isTaxItem ? (
+                              <span className="text-xs text-gray-400 italic">No receipt needed</span>
+                            ) : (
+                              <ReceiptDropZone
+                                files={item.receipts}
+                                onFilesChange={(newFiles) => {
+                                  setLineItems(lineItems.map(li =>
+                                    li.id === item.id ? { ...li, receipts: newFiles } : li
+                                  ));
+                                }}
+                              />
+                            )}
+                          </td>
+                          {!isTaxItem && (
+                            <td className="px-3 py-3">
+                              <div className="flex items-center justify-center gap-1">
+                                {requestType === 'Reimbursement' && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => editLineItem(item)}
+                                  >
+                                    Edit
+                                  </Button>
+                                )}
                                 <Button
                                   type="button"
-                                  variant="outline"
+                                  variant="ghost"
                                   size="sm"
-                                  onClick={() => editLineItem(item)}
+                                  onClick={() => deleteLineItem(item.id)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
-                                  Edit
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
-                              )}
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => deleteLineItem(item.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </td>
-                        )}
-                        {isTaxItem && requestType === 'Reimbursement' && (
-                          <td className="px-3 py-3"></td>
-                        )}
-                      </tr>
+                              </div>
+                            </td>
+                          )}
+                          {isTaxItem && requestType === 'Reimbursement' && (
+                            <td className="px-3 py-3"></td>
+                          )}
+                        </tr>
                       );
                     })}
                     <tr className="bg-gray-50 font-semibold">
@@ -1429,34 +1372,34 @@ export function PaymentRequestWizard({ onBack }: PaymentRequestWizardProps) {
 
       {/* Navigation Buttons */}
       {currentStep < 4 && (
-      <div className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={handlePrevious}
-          disabled={currentStep === 1}
-        >
-          <ChevronLeft className="h-4 w-4 mr-2" />
-          Previous
-        </Button>
+        <div className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+          >
+            <ChevronLeft className="h-4 w-4 mr-2" />
+            Previous
+          </Button>
 
-        {currentStep < 3 ? (
-          <Button
-            onClick={handleNext}
-            className="bg-ku-blue hover:bg-ku-blue-dark"
-          >
-            Next
-            <ChevronRight className="h-4 w-4 ml-2" />
-          </Button>
-        ) : (
-          <Button
-            onClick={handleSubmit}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <Check className="h-4 w-4 mr-2" />
-            Submit for Approval
-          </Button>
-        )}
-      </div>
+          {currentStep < 3 ? (
+            <Button
+              onClick={handleNext}
+              className="bg-ku-blue hover:bg-ku-blue-dark"
+            >
+              Next
+              <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Check className="h-4 w-4 mr-2" />
+              Submit for Approval
+            </Button>
+          )}
+        </div>
       )}
 
       {/* Cancel Confirmation Modal */}

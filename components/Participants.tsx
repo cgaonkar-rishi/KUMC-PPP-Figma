@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Plus, Edit, Archive, Eye, Filter, UserRound, ChevronDown, ChevronUp, X, Calendar, FlaskConical, FileSpreadsheet, Upload, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Search, Plus, Edit, Archive, Eye, Filter, UserRound, ChevronDown, ChevronUp, X, Calendar, FlaskConical, FileSpreadsheet, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { StudyEnrollmentPanel } from './StudyEnrollmentPanel';
 import { AddressVerificationModal } from './AddressVerificationModal';
@@ -19,11 +19,7 @@ export function Participants() {
   const [viewingParticipant, setViewingParticipant] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('details');
   const [managingEnrollment, setManagingEnrollment] = useState<any>(null);
-  const [selectedStudies, setSelectedStudies] = useState<string[]>([]);
   const [detailsStudySearch, setDetailsStudySearch] = useState('');
-  const [currentStudies, setCurrentStudies] = useState<string[]>([]);
-  const [availableStudies, setAvailableStudies] = useState<string[]>([]);
-  const [selectedStudyForConsent, setSelectedStudyForConsent] = useState<string>('');
   const [showAddressVerification, setShowAddressVerification] = useState(false);
   const [showParticipantVerification, setShowParticipantVerification] = useState(false);
   const [addressFields, setAddressFields] = useState({
@@ -37,8 +33,8 @@ export function Participants() {
   const [showAddStudy, setShowAddStudy] = useState(false);
   const [studySearch, setStudySearch] = useState('');
   const [enrolledStudies, setEnrolledStudies] = useState<string[]>([]);
-  const [studySpecificIds, setStudySpecificIds] = useState<{[key: string]: string}>({});
-  
+  const [studySpecificIds, setStudySpecificIds] = useState<{ [key: string]: string }>({});
+
   // Study Rules state
   const [selectedRuleStudy, setSelectedRuleStudy] = useState('');
   const [ruleStudyParticipantId, setRuleStudyParticipantId] = useState('');
@@ -73,8 +69,8 @@ export function Participants() {
 
   const filteredParticipants = participants.filter(participant => {
     const matchesSearch = participant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         participant.participantId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         participant.study.toLowerCase().includes(searchTerm.toLowerCase());
+      participant.participantId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      participant.study.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || participant.participantStatus === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -83,7 +79,6 @@ export function Participants() {
     setShowEnrollPanel(false);
     setEditingParticipant(null);
     setViewingParticipant(null);
-    setCurrentStudies([]);
     setEnrolledStudies([]);
     setShowAddStudy(false);
     setStudySearch('');
@@ -96,11 +91,11 @@ export function Participants() {
 
     // In a real application, this would make an API call to save the participant
     // For now, we'll just show a success message with tax withholding status
-    
-    const taxStatus = editingParticipant.withholdTax === 'yes' 
+
+    const taxStatus = editingParticipant.withholdTax === 'yes'
       ? 'Tax withholding enabled - 10% will be deducted from payments'
       : 'Tax withholding disabled';
-    
+
     toast.success(
       `Participant ${editingParticipant.participantId} updated successfully. ${taxStatus}`,
       { duration: 5000 }
@@ -130,28 +125,28 @@ export function Participants() {
 
         {/* Right Side - Action Buttons */}
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setShowKPIs(!showKPIs)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title={showKPIs ? 'Hide Key Performance Indicators' : 'Show Key Performance Indicators'}
           >
             {showKPIs ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
-          <button 
+          <button
             onClick={() => setShowUploadModal(true)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title="Bulk Upload Participants from Excel"
           >
-          <Upload size={20} />
+            <Upload size={20} />
           </button>
-          <button 
+          <button
             onClick={() => setShowExportModal(true)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-green-600 rounded-lg transition-all shadow-sm"
             title="Export Participants to Excel"
           >
             <FileSpreadsheet size={20} />
           </button>
-          <button 
+          <button
             onClick={() => setShowEnrollPanel(true)}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 font-medium shadow-sm transition-all"
             title="Register New Participant"
@@ -209,7 +204,7 @@ export function Participants() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Filter size={20} className="text-gray-400" />
             <select
@@ -245,10 +240,9 @@ export function Participants() {
                 <tr key={participant.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">{participant.participantId}</td>
                   <td className="px-6 py-4">
-                    <button 
+                    <button
                       onClick={() => {
                         setViewingParticipant(participant);
-                        setCurrentStudies(participant.studyList || []);
                         setEnrolledStudies(participant.studyList || []);
                         setShowEnrollPanel(true);
                       }}
@@ -269,7 +263,7 @@ export function Participants() {
                     <div className="flex flex-wrap gap-1">
                       {participant.studyList && participant.studyList.length > 0 ? (
                         participant.studyList.map((studyCode: string) => (
-                          <span 
+                          <span
                             key={studyCode}
                             className="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full font-medium"
                           >
@@ -282,55 +276,51 @@ export function Participants() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      participant.participantStatus === 'Active' ? 'bg-green-100 text-green-800' :
+                    <span className={`px-3 py-1 rounded-full text-sm ${participant.participantStatus === 'Active' ? 'bg-green-100 text-green-800' :
                       participant.participantStatus === 'Inactive' ? 'bg-gray-100 text-gray-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
+                        'bg-red-100 text-red-800'
+                      }`}>
                       {participant.participantStatus}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button 
+                      <button
                         onClick={() => {
                           setViewingParticipant(participant);
-                          setCurrentStudies(participant.studyList || []);
                           setShowEnrollPanel(true);
                         }}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded" 
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded"
                         title="View"
                       >
                         <Eye size={16} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setEditingParticipant(participant);
-                          setCurrentStudies(participant.studyList || []);
                           setEnrolledStudies(participant.studyList || []);
                           setShowEnrollPanel(true);
                         }}
-                        className="p-2 text-green-600 hover:bg-green-50 rounded" 
+                        className="p-2 text-green-600 hover:bg-green-50 rounded"
                         title="Edit"
                       >
                         <Edit size={16} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setEditingParticipant(participant);
-                          setCurrentStudies(participant.studyList || []);
                           setEnrolledStudies(participant.studyList || []);
                           setActiveTab('studies');
                           setShowEnrollPanel(true);
                         }}
-                        className="p-2 text-purple-600 hover:bg-purple-50 rounded" 
+                        className="p-2 text-purple-600 hover:bg-purple-50 rounded"
                         title="Manage Study Enrollment"
                       >
                         <FlaskConical size={16} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => setDeletingParticipant(participant)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded" 
+                        className="p-2 text-red-600 hover:bg-red-50 rounded"
                         title="Archive"
                       >
                         <Archive size={16} />
@@ -342,7 +332,7 @@ export function Participants() {
             </tbody>
           </table>
         </div>
-        
+
         <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
           <p className="text-gray-600">Showing {filteredParticipants.length} of {participants.length} participants</p>
           <div className="flex gap-2">
@@ -358,9 +348,9 @@ export function Participants() {
       {managingEnrollment && (
         <StudyEnrollmentPanel
           participant={managingEnrollment}
-          selectedStudies={selectedStudies}
+          selectedStudies={[]}
           onClose={() => setManagingEnrollment(null)}
-          onSave={(studies) => {
+          onSave={() => {
             // Handle save logic here
             setManagingEnrollment(null);
           }}
@@ -387,28 +377,26 @@ export function Participants() {
                   <X size={20} />
                 </button>
               </div>
-              
+
               {/* Tabs Navigation */}
               <div className="px-6">
                 <div className="flex gap-1 border-b border-gray-200">
                   <button
                     onClick={() => setActiveTab('details')}
-                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeTab === 'details'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
+                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'details'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     Details
                   </button>
                   {(isViewMode || isEditMode) && (
                     <button
                       onClick={() => setActiveTab('studies')}
-                      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                        activeTab === 'studies'
-                          ? 'border-blue-600 text-blue-600'
-                          : 'border-transparent text-gray-600 hover:text-gray-900'
-                      }`}
+                      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'studies'
+                        ? 'border-blue-600 text-blue-600'
+                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                        }`}
                     >
                       Studies
                     </button>
@@ -416,11 +404,10 @@ export function Participants() {
                   {(isViewMode || isEditMode) && (
                     <button
                       onClick={() => setActiveTab('history')}
-                      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                        activeTab === 'history'
-                          ? 'border-blue-600 text-blue-600'
-                          : 'border-transparent text-gray-600 hover:text-gray-900'
-                      }`}
+                      className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'history'
+                        ? 'border-blue-600 text-blue-600'
+                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                        }`}
                     >
                       Audit History
                     </button>
@@ -441,10 +428,10 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           First Name <span className="text-red-500">*</span>
                         </label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={currentParticipant?.firstName || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -455,10 +442,10 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Last Name <span className="text-red-500">*</span>
                         </label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={currentParticipant?.lastName || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -469,10 +456,10 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Date of Birth <span className="text-red-500">*</span>
                         </label>
-                        <input 
-                          type="date" 
+                        <input
+                          type="date"
                           value={currentParticipant?.dob || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -482,9 +469,9 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Gender <span className="text-red-500">*</span>
                         </label>
-                        <select 
+                        <select
                           value={currentParticipant?.gender || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                         >
@@ -499,7 +486,7 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Participant Status <span className="text-red-500">*</span>
                         </label>
-                        <select 
+                        <select
                           value={currentParticipant?.participantStatus || 'Active'}
                           onChange={(e) => {
                             if (!isViewMode && editingParticipant) {
@@ -528,10 +515,10 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Email Address <span className="text-red-500">*</span>
                         </label>
-                        <input 
-                          type="email" 
+                        <input
+                          type="email"
                           value={currentParticipant?.email || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -542,17 +529,17 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Phone Number <span className="text-red-500">*</span>
                         </label>
-                        <input 
-                          type="tel" 
+                        <input
+                          type="tel"
                           value={currentParticipant?.phone || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                           placeholder="(555) 123-4567"
                         />
                       </div>
-                      
+
                       {/* Address Section with Verify Button */}
                       <div className="border-t border-gray-300 pt-4 mt-4">
                         <div className="flex items-center justify-between mb-3">
@@ -560,7 +547,7 @@ export function Participants() {
                             Mailing Address
                           </label>
                           {!isViewMode && (
-                            <button 
+                            <button
                               type="button"
                               className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium"
                               onClick={() => setShowAddressVerification(true)}
@@ -569,47 +556,47 @@ export function Participants() {
                             </button>
                           )}
                         </div>
-                        
+
                         <div className="space-y-3">
                           <div>
                             <label className="block text-gray-700 text-sm mb-2">
                               Address Line 1 <span className="text-red-500">*</span>
                             </label>
-                            <input 
-                              type="text" 
+                            <input
+                              type="text"
                               value={currentParticipant?.address1 || addressFields.address1}
-                              onChange={(e) => !isViewMode && setAddressFields({...addressFields, address1: e.target.value})}
+                              onChange={(e) => !isViewMode && setAddressFields({ ...addressFields, address1: e.target.value })}
                               readOnly={isViewMode}
                               disabled={isViewMode}
                               className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                               placeholder="Street number and name"
                             />
                           </div>
-                          
+
                           <div>
                             <label className="block text-gray-700 text-sm mb-2">
                               Address Line 2
                             </label>
-                            <input 
-                              type="text" 
+                            <input
+                              type="text"
                               value={currentParticipant?.address2 || addressFields.address2}
-                              onChange={(e) => !isViewMode && setAddressFields({...addressFields, address2: e.target.value})}
+                              onChange={(e) => !isViewMode && setAddressFields({ ...addressFields, address2: e.target.value })}
                               readOnly={isViewMode}
                               disabled={isViewMode}
                               className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                               placeholder="Apartment, suite, unit, etc. (optional)"
                             />
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label className="block text-gray-700 text-sm mb-2">
                                 City <span className="text-red-500">*</span>
                               </label>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 value={currentParticipant?.city || addressFields.city}
-                                onChange={(e) => !isViewMode && setAddressFields({...addressFields, city: e.target.value})}
+                                onChange={(e) => !isViewMode && setAddressFields({ ...addressFields, city: e.target.value })}
                                 readOnly={isViewMode}
                                 disabled={isViewMode}
                                 className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -620,9 +607,9 @@ export function Participants() {
                               <label className="block text-gray-700 text-sm mb-2">
                                 State <span className="text-red-500">*</span>
                               </label>
-                              <select 
+                              <select
                                 value={currentParticipant?.state || addressFields.state}
-                                onChange={(e) => !isViewMode && setAddressFields({...addressFields, state: e.target.value})}
+                                onChange={(e) => !isViewMode && setAddressFields({ ...addressFields, state: e.target.value })}
                                 disabled={isViewMode}
                                 className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                               >
@@ -680,16 +667,16 @@ export function Participants() {
                               </select>
                             </div>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label className="block text-gray-700 text-sm mb-2">
                                 ZIP Code <span className="text-red-500">*</span>
                               </label>
-                              <input 
-                                type="text" 
+                              <input
+                                type="text"
                                 value={currentParticipant?.zip || addressFields.zip}
-                                onChange={(e) => !isViewMode && setAddressFields({...addressFields, zip: e.target.value})}
+                                onChange={(e) => !isViewMode && setAddressFields({ ...addressFields, zip: e.target.value })}
                                 readOnly={isViewMode}
                                 disabled={isViewMode}
                                 className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -701,9 +688,9 @@ export function Participants() {
                               <label className="block text-gray-700 text-sm mb-2">
                                 Country <span className="text-red-500">*</span>
                               </label>
-                              <select 
+                              <select
                                 value={currentParticipant?.country || addressFields.country}
-                                onChange={(e) => !isViewMode && setAddressFields({...addressFields, country: e.target.value})}
+                                onChange={(e) => !isViewMode && setAddressFields({ ...addressFields, country: e.target.value })}
                                 disabled={isViewMode}
                                 className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                               >
@@ -729,7 +716,7 @@ export function Participants() {
                             Social Security Number (SSN) <span className="text-red-500">*</span>
                           </label>
                           {!isViewMode && (
-                            <button 
+                            <button
                               type="button"
                               className="text-sm text-ku-blue hover:text-ku-blue-dark hover:underline"
                               onClick={() => setShowParticipantVerification(true)}
@@ -738,10 +725,10 @@ export function Participants() {
                             </button>
                           )}
                         </div>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={currentParticipant?.ssn || ''}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -755,12 +742,12 @@ export function Participants() {
                         </label>
                         <div className="flex gap-4">
                           <label className={`flex items-center gap-2 px-4 py-3 border-2 border-gray-300 rounded-lg ${!isViewMode ? 'hover:bg-white cursor-pointer' : 'bg-gray-100 cursor-not-allowed'}`}>
-                            <input 
-                              type="radio" 
+                            <input
+                              type="radio"
                               name="withhold-tax"
                               value="yes"
                               checked={currentParticipant?.withholdTax === 'yes'}
-                              onChange={(e) => {
+                              onChange={() => {
                                 if (!isViewMode && editingParticipant) {
                                   setEditingParticipant({
                                     ...editingParticipant,
@@ -774,12 +761,12 @@ export function Participants() {
                             <span className="text-gray-700">Yes - Withhold taxes from payments</span>
                           </label>
                           <label className={`flex items-center gap-2 px-4 py-3 border-2 border-gray-300 rounded-lg ${!isViewMode ? 'hover:bg-white cursor-pointer' : 'bg-gray-100 cursor-not-allowed'}`}>
-                            <input 
-                              type="radio" 
+                            <input
+                              type="radio"
                               name="withhold-tax"
                               value="no"
                               checked={currentParticipant?.withholdTax === 'no' || !currentParticipant?.withholdTax}
-                              onChange={(e) => {
+                              onChange={() => {
                                 if (!isViewMode && editingParticipant) {
                                   setEditingParticipant({
                                     ...editingParticipant,
@@ -802,8 +789,8 @@ export function Participants() {
                         <label className="block text-sm mb-1 text-gray-700">
                           Tax Withholding Notes
                         </label>
-                        <textarea 
-                          onChange={() => {}}
+                        <textarea
+                          onChange={() => { }}
                           readOnly={isViewMode}
                           disabled={isViewMode}
                           className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -819,8 +806,8 @@ export function Participants() {
                     <label className="block text-sm mb-1 text-gray-700">
                       Additional Notes
                     </label>
-                    <textarea 
-                      onChange={() => {}}
+                    <textarea
+                      onChange={() => { }}
                       readOnly={isViewMode}
                       disabled={isViewMode}
                       className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${isViewMode ? 'bg-gray-100 cursor-not-allowed' : ''}`}
@@ -831,7 +818,7 @@ export function Participants() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
-                    <button 
+                    <button
                       type="button"
                       onClick={handleClosePanel}
                       className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
@@ -839,7 +826,7 @@ export function Participants() {
                       {isViewMode ? 'Close' : 'Cancel'}
                     </button>
                     {!isViewMode && (
-                      <button 
+                      <button
                         type="button"
                         onClick={handleSaveParticipant}
                         className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -903,13 +890,13 @@ export function Participants() {
                       {studySearch && (
                         <div className="border border-gray-300 rounded-lg max-h-48 overflow-y-auto bg-white">
                           {allStudies
-                            .filter(s => 
+                            .filter(s =>
                               !enrolledStudies.includes(s.code) &&
-                              (s.code.toLowerCase().includes(studySearch.toLowerCase()) || 
-                               s.name.toLowerCase().includes(studySearch.toLowerCase()))
+                              (s.code.toLowerCase().includes(studySearch.toLowerCase()) ||
+                                s.name.toLowerCase().includes(studySearch.toLowerCase()))
                             )
                             .map((study) => (
-                              <div 
+                              <div
                                 key={study.code}
                                 className="flex items-center justify-between p-3 hover:bg-gray-50 border-b last:border-b-0"
                               >
@@ -931,15 +918,15 @@ export function Participants() {
                                 </button>
                               </div>
                             ))}
-                          {allStudies.filter(s => 
+                          {allStudies.filter(s =>
                             !enrolledStudies.includes(s.code) &&
-                            (s.code.toLowerCase().includes(studySearch.toLowerCase()) || 
-                             s.name.toLowerCase().includes(studySearch.toLowerCase()))
+                            (s.code.toLowerCase().includes(studySearch.toLowerCase()) ||
+                              s.name.toLowerCase().includes(studySearch.toLowerCase()))
                           ).length === 0 && (
-                            <div className="p-4 text-center text-gray-500 text-sm">
-                              No studies found
-                            </div>
-                          )}
+                              <div className="p-4 text-center text-gray-500 text-sm">
+                                No studies found
+                              </div>
+                            )}
                         </div>
                       )}
                     </div>
@@ -998,28 +985,28 @@ export function Participants() {
                                   const study = allStudies.find(s => s.code === studyCode);
                                   const searchLower = detailsStudySearch.toLowerCase();
                                   return studyCode.toLowerCase().includes(searchLower) ||
-                                         study?.name.toLowerCase().includes(searchLower) ||
-                                         false;
+                                    study?.name.toLowerCase().includes(searchLower) ||
+                                    false;
                                 })
                                 .map((studyCode: string) => {
-                                const study = allStudies.find(s => s.code === studyCode);
-                                return (
-                                  <tr key={studyCode} className="hover:bg-gray-50">
-                                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                                      {studyCode}
-                                    </td>
-                                    <td className="px-4 py-3 text-sm text-gray-900">
-                                      {study?.name || '-'}
-                                    </td>
-                                    <td className="px-4 py-3 text-sm text-gray-900">
-                                      {studySpecificIds[studyCode] || <span className="text-gray-400 italic">Not assigned</span>}
-                                    </td>
-                                    <td className="px-4 py-3 text-sm text-gray-900">
-                                      {studyPrimaryLocations[studyCode] || <span className="text-gray-400 italic">Not assigned</span>}
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                                  const study = allStudies.find(s => s.code === studyCode);
+                                  return (
+                                    <tr key={studyCode} className="hover:bg-gray-50">
+                                      <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                        {studyCode}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-900">
+                                        {study?.name || '-'}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-900">
+                                        {studySpecificIds[studyCode] || <span className="text-gray-400 italic">Not assigned</span>}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-900">
+                                        {studyPrimaryLocations[studyCode] || <span className="text-gray-400 italic">Not assigned</span>}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
                             </tbody>
                           </table>
                         </div>
@@ -1193,7 +1180,7 @@ export function Participants() {
               {(isViewMode || isEditMode) && activeTab === 'history' && (
                 <div className="space-y-4">
                   <h3 className="text-lg border-b pb-2">Audit History</h3>
-                  
+
                   <div className="space-y-3">
                     <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-green-500">
                       <div className="flex items-start justify-between mb-1">
@@ -1310,13 +1297,13 @@ export function Participants() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => setShowExportModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     // Export logic would go here
                     setShowExportModal(false);
@@ -1360,22 +1347,21 @@ export function Participants() {
                     setUploadedFile(e.dataTransfer.files[0]);
                   }
                 }}
-                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                  dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
-                }`}
+                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
+                  }`}
               >
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
                     <Upload className="text-blue-600" size={32} />
                   </div>
-                  
+
                   {uploadedFile ? (
                     <div className="space-y-2">
                       <p className="text-gray-900">{uploadedFile.name}</p>
                       <p className="text-sm text-gray-500">
                         {(uploadedFile.size / 1024).toFixed(2)} KB
                       </p>
-                      <button 
+                      <button
                         onClick={() => setUploadedFile(null)}
                         className="text-sm text-red-600 hover:underline"
                       >
@@ -1451,7 +1437,7 @@ export function Participants() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => {
                     setShowUploadModal(false);
                     setUploadedFile(null);
@@ -1460,7 +1446,7 @@ export function Participants() {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   disabled={!uploadedFile}
                   className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
@@ -1491,13 +1477,13 @@ export function Participants() {
                 This action cannot be undone. All visit records and payment history for this participant will also be removed.
               </p>
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={() => setDeletingParticipant(null)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     // Handle archive logic here
                     setDeletingParticipant(null);

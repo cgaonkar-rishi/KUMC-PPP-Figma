@@ -1,4 +1,4 @@
-import { X, Calendar, DollarSign, Plus, Archive, AlertCircle, GripVertical } from 'lucide-react';
+import { X, Calendar, DollarSign, Archive, AlertCircle, GripVertical } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -51,18 +51,6 @@ export function PaymentSchedulePanel({ onClose, study }: PaymentSchedulePanelPro
 
   const visits = selectedStudy ? getVisitsForStudy(selectedStudy) : [];
 
-  const addScheduleItem = (visit: any) => {
-    const newItem = {
-      visitId: visit.id,
-      visitName: visit.name,
-      paymentType: 'Stipend',
-      amount: 0,
-      description: '',
-      taxable: false,
-      travelReimbursement: false,
-    };
-    setScheduleItems([...scheduleItems, newItem]);
-  };
 
   const removeScheduleItem = (index: number) => {
     setScheduleItems(scheduleItems.filter((_, i) => i !== index));
@@ -111,7 +99,7 @@ export function PaymentSchedulePanel({ onClose, study }: PaymentSchedulePanelPro
     const draggedItem = items[draggedIndex];
     items.splice(draggedIndex, 1);
     items.splice(dropIndex, 0, draggedItem);
-    
+
     setScheduleItems(items);
     setDraggedIndex(null);
   };
@@ -149,7 +137,7 @@ export function PaymentSchedulePanel({ onClose, study }: PaymentSchedulePanelPro
               <label className="block text-gray-700 mb-2">
                 Select Study <span className="text-red-500">*</span>
               </label>
-              <select 
+              <select
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={selectedStudy}
                 onChange={(e) => {
@@ -180,9 +168,8 @@ export function PaymentSchedulePanel({ onClose, study }: PaymentSchedulePanelPro
               <h3 className="text-lg mb-4">Available Study Visits</h3>
               <div className="space-y-2">
                 {visits.map(visit => {
-                  const isAdded = scheduleItems.some(item => item.visitId === visit.id);
                   return (
-                    <div 
+                    <div
                       key={visit.id}
                       className="bg-white rounded-lg p-4 border border-gray-200 flex items-center justify-between"
                     >
@@ -227,9 +214,8 @@ export function PaymentSchedulePanel({ onClose, study }: PaymentSchedulePanelPro
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, index)}
                     onDragEnd={handleDragEnd}
-                    className={`bg-white rounded-lg p-4 border-2 border-green-300 cursor-move transition-all ${
-                      draggedIndex === index ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
-                    }`}
+                    className={`bg-white rounded-lg p-4 border-2 border-green-300 cursor-move transition-all ${draggedIndex === index ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
+                      }`}
                   >
                     <div className="flex items-start gap-3 mb-4">
                       <div className="flex items-center justify-center p-2 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing">
@@ -353,14 +339,14 @@ export function PaymentSchedulePanel({ onClose, study }: PaymentSchedulePanelPro
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4 border-t border-gray-200">
-            <button 
+            <button
               type="button"
               onClick={onClose}
               className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               Cancel
             </button>
-            <button 
+            <button
               type="button"
               onClick={handleSave}
               disabled={!selectedStudy || scheduleItems.length === 0}

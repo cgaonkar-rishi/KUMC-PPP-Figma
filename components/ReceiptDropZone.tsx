@@ -11,10 +11,10 @@ interface UploadedFile {
 interface ReceiptDropZoneProps {
   files: UploadedFile[];
   onFilesChange: (files: UploadedFile[]) => void;
-  itemId: string;
+  itemId?: string;
 }
 
-export function ReceiptDropZone({ files, onFilesChange, itemId }: ReceiptDropZoneProps) {
+export function ReceiptDropZone({ files, onFilesChange }: ReceiptDropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
 
   const formatFileSize = (bytes: number) => {
@@ -27,7 +27,7 @@ export function ReceiptDropZone({ files, onFilesChange, itemId }: ReceiptDropZon
 
   const handleFileUpload = (fileList: FileList | null) => {
     if (!fileList) return;
-    
+
     const newFiles: UploadedFile[] = Array.from(fileList).map(file => ({
       id: Math.random().toString(36).substr(2, 9),
       name: file.name,
@@ -73,11 +73,10 @@ export function ReceiptDropZone({ files, onFilesChange, itemId }: ReceiptDropZon
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-4 transition-all cursor-pointer ${
-          isDragging 
-            ? 'border-ku-blue bg-blue-50' 
-            : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
-        }`}
+        className={`border-2 border-dashed rounded-lg p-4 transition-all cursor-pointer ${isDragging
+          ? 'border-ku-blue bg-blue-50'
+          : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+          }`}
       >
         <label className="cursor-pointer block">
           <input

@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { Search, Plus, Edit, Archive, Eye, Filter, FlaskConical, ChevronDown, ChevronUp, X, Upload, FileSpreadsheet, Users, ArrowUpDown, ArrowUp, ArrowDown, Calendar, DollarSign, AlertCircle, GripVertical, Trash2, Lock } from 'lucide-react';
+﻿import { useState } from 'react';
+import { Search, Plus, Edit, Archive, Eye, Filter, FlaskConical, ChevronDown, ChevronUp, X, Upload, FileSpreadsheet, Users, Calendar, DollarSign, GripVertical, Trash2, Lock } from 'lucide-react';
 import { EnrollmentPanel } from './EnrollmentPanel';
-import { LoadingSpinner, TableLoadingState, OverlayLoadingState } from './LoadingSpinner';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PaymentSchedulePanel } from './PaymentSchedulePanel';
 import { toast } from 'sonner';
@@ -9,13 +8,10 @@ import { toast } from 'sonner';
 export function Studies() {
   // Mock user role - in production, this would come from auth context
   const userRole = 'Study Coordinator'; // Options: 'System', 'Global Admin', 'Study Coordinator', 'PI', etc.
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPI, setFilterPI] = useState('all');
-  const [sortColumn, setSortColumn] = useState<string>('');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showKPIs, setShowKPIs] = useState(false);
   const [showSetupPanel, setShowSetupPanel] = useState(false);
@@ -28,21 +24,15 @@ export function Studies() {
   const [viewingStudy, setViewingStudy] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('details');
   const [managingEnrollment, setManagingEnrollment] = useState<any>(null);
-  const [enrollmentSearch, setEnrollmentSearch] = useState('');
-  const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]);
+  const [selectedParticipants] = useState<string[]>([]);
   const [detailsParticipantSearch, setDetailsParticipantSearch] = useState('');
   const [showPaymentSchedulePanel, setShowPaymentSchedulePanel] = useState(false);
-  const [studyParticipantIds, setStudyParticipantIds] = useState<{[key: string]: string}>({});
-  const [participantSearch, setParticipantSearch] = useState('');
+  const [studyParticipantIds, setStudyParticipantIds] = useState<{ [key: string]: string }>({});
   const [enrolledParticipants, setEnrolledParticipants] = useState<string[]>([]);
   const [locationSearch, setLocationSearch] = useState('');
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [studyLocations, setStudyLocations] = useState<string[]>([]);
-  const [scheduleItems, setScheduleItems] = useState<any[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [expandedVisit, setExpandedVisit] = useState<string | null>(null);
-  const [expandedParticipant, setExpandedParticipant] = useState<string | null>(null);
-  const [showAddParticipant, setShowAddParticipant] = useState(false);
   const [showAddVisit, setShowAddVisit] = useState(false);
   const [visitOrder, setVisitOrder] = useState<any[]>([]);
   const [hasVisitChanges, setHasVisitChanges] = useState(false);
@@ -54,10 +44,9 @@ export function Studies() {
   const [dragActiveParticipants, setDragActiveParticipants] = useState(false);
   const [dragActiveVisits, setDragActiveVisits] = useState(false);
   const [visitsEffectiveDate, setVisitsEffectiveDate] = useState(new Date().toISOString().split('T')[0]);
-  const [hasParticipantChanges, setHasParticipantChanges] = useState(false);
   const [showExportParticipantsModal, setShowExportParticipantsModal] = useState(false);
   const [showExportVisitsModal, setShowExportVisitsModal] = useState(false);
-  
+
   // Participant Rules state
   const [selectedRuleParticipant, setSelectedRuleParticipant] = useState('');
   const [ruleStudyParticipantId, setRuleStudyParticipantId] = useState('');
@@ -71,24 +60,26 @@ export function Studies() {
     withholdTaxes: 'No',
     status: 'Registered'
   });
-  const [participantRules, setParticipantRules] = useState<{[key: string]: {
-    studyParticipantId: string;
-    waiveSSN: string;
-    withholdTaxes: string;
-    status: string;
-  }}>({});
+  const [participantRules, setParticipantRules] = useState<{
+    [key: string]: {
+      studyParticipantId: string;
+      waiveSSN: string;
+      withholdTaxes: string;
+      status: string;
+    }
+  }>({});
   const [showVisitChangesConfirmation, setShowVisitChangesConfirmation] = useState(false);
   const [newVisitId, setNewVisitId] = useState('');
   const [newVisitName, setNewVisitName] = useState('');
   const [newVisitType, setNewVisitType] = useState('');
   const [newVisitPayment, setNewVisitPayment] = useState('');
-  
+
   // Payment Schedule versioning state
   const [currentVersionDate, setCurrentVersionDate] = useState('2026-01-26');
   const [priorVersions, setPriorVersions] = useState<string[]>(['2026-01-15', '2026-01-01', '2025-12-15']);
   const [selectedPriorVersion, setSelectedPriorVersion] = useState('');
   const [showPriorVersions, setShowPriorVersions] = useState(false);
-  
+
   // Mock participant data for the details tab
   const allParticipants = [
     { id: 'P-2026-001', name: 'John Smith', status: 'Active' },
@@ -158,24 +149,13 @@ export function Studies() {
 
   const filteredStudies = studies.filter(study => {
     const matchesSearch = study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         study.pi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         study.irb.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         study.protocol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         study.code.toLowerCase().includes(searchTerm.toLowerCase());
+      study.pi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      study.irb.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      study.protocol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      study.code.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || study.status === filterStatus;
     const matchesPI = filterPI === 'all' || study.pi === filterPI;
     return matchesSearch && matchesStatus && matchesPI;
-  }).sort((a, b) => {
-    if (sortColumn) {
-      const aValue = a[sortColumn];
-      const bValue = b[sortColumn];
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-      }
-    }
-    return 0;
   });
 
   const handleDrag = (e: React.DragEvent) => {
@@ -192,7 +172,7 @@ export function Studies() {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setUploadedFile(e.dataTransfer.files[0]);
     }
@@ -218,7 +198,7 @@ export function Studies() {
     e.preventDefault();
     e.stopPropagation();
     setDragActiveParticipants(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setUploadedParticipantsFile(e.dataTransfer.files[0]);
     }
@@ -244,7 +224,7 @@ export function Studies() {
     e.preventDefault();
     e.stopPropagation();
     setDragActiveVisits(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setUploadedVisitsFile(e.dataTransfer.files[0]);
     }
@@ -256,14 +236,6 @@ export function Studies() {
     }
   };
 
-  const handleSort = (column: string) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
 
   const handleArchiveStudy = async () => {
     setIsProcessing(true);
@@ -280,7 +252,7 @@ export function Studies() {
       ...studyParticipantIds,
       [selectedRuleParticipant]: ruleStudyParticipantId
     });
-    
+
     // Save all participant rules
     setParticipantRules({
       ...participantRules,
@@ -291,24 +263,13 @@ export function Studies() {
         status: ruleStatus
       }
     });
-    
+
     toast.success('Participant rules saved successfully');
-    
+
     // Reset form
-    setSelectedRuleParticipant('');
-    setRuleStudyParticipantId('');
-    setRuleWaiveSSN('No');
-    setRuleWithholdTaxes('No');
     setRuleStatus('Registered');
-    setShowRulesConfirmation(false);
   };
 
-  const getSortIcon = (column: string) => {
-    if (sortColumn !== column) return <ArrowUpDown size={16} className="text-gray-400" />;
-    return sortDirection === 'asc' ? 
-      <ArrowUp size={16} className="text-blue-600" /> : 
-      <ArrowDown size={16} className="text-blue-600" />;
-  };
 
   const handleCloseSetupPanel = () => {
     // Check if there are unsaved visit changes
@@ -316,14 +277,14 @@ export function Studies() {
       setShowVisitChangesConfirmation(true);
       return;
     }
-    
+
     setShowSetupPanel(false);
     setEditingStudy(null);
     setViewingStudy(null);
     setActiveTab('details');
     setEnrolledParticipants([]);
     setStudyParticipantIds({});
-    setParticipantSearch('');
+    
     setDetailsParticipantSearch('');
     setLocationSearch('');
     setStudyLocations([]);
@@ -339,7 +300,7 @@ export function Studies() {
     setActiveTab('details');
     setEnrolledParticipants([]);
     setStudyParticipantIds({});
-    setParticipantSearch('');
+    
     setDetailsParticipantSearch('');
     setLocationSearch('');
     setStudyLocations([]);
@@ -367,28 +328,28 @@ export function Studies() {
 
         {/* Right Side - Action Buttons */}
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setShowKPIs(!showKPIs)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title={showKPIs ? 'Hide Key Performance Indicators' : 'Show Key Performance Indicators'}
           >
             {showKPIs ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
-          <button 
+          <button
             onClick={() => setShowUploadModal(true)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title="Bulk Upload Studies from Excel"
           >
             <Upload size={20} />
           </button>
-          <button 
+          <button
             onClick={() => setShowExportModal(true)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-green-600 rounded-lg transition-all shadow-sm"
             title="Export Studies to Excel"
           >
             <FileSpreadsheet size={20} />
           </button>
-          <button 
+          <button
             onClick={() => setShowSetupPanel(true)}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 font-medium shadow-sm transition-all"
             title="Setup New Study"
@@ -443,7 +404,7 @@ export function Studies() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
             />
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Filter size={20} className="text-gray-600" aria-hidden="true" />
             <label htmlFor="filter-status" className="sr-only">Filter by study status</label>
@@ -505,7 +466,7 @@ export function Studies() {
                   <td className="px-6 py-4">{study.irb}</td>
                   <td className="px-6 py-4">{study.protocol}</td>
                   <td className="px-6 py-4">
-                    <button 
+                    <button
                       onClick={() => {
                         setViewingStudy(study);
                         setEnrolledParticipants(study.participantList || []);
@@ -520,19 +481,18 @@ export function Studies() {
                   <td className="px-6 py-4">{study.startDate}</td>
                   <td className="px-6 py-4">{study.endDate}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      study.status === 'Active' ? 'bg-green-100 text-green-800' :
+                    <span className={`px-3 py-1 rounded-full text-sm ${study.status === 'Active' ? 'bg-green-100 text-green-800' :
                       study.status === 'Study start' ? 'bg-blue-100 text-blue-800' :
-                      study.status === 'Study completed' ? 'bg-gray-100 text-gray-800' :
-                      study.status === 'Canceled/withdrawn' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                        study.status === 'Study completed' ? 'bg-gray-100 text-gray-800' :
+                          study.status === 'Canceled/withdrawn' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                      }`}>
                       {study.status}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button 
+                      <button
                         onClick={() => {
                           setViewingStudy(study);
                           setEnrolledParticipants(study.participantList || []);
@@ -543,13 +503,13 @@ export function Studies() {
                       >
                         <Eye size={16} />
                       </button>
-                      {study.status !== 'Active' && study.status !== 'Study start' && userRole !== 'System' && userRole !== 'Global Admin' ? (
-                        <button 
-                          className="p-2 text-gray-400 cursor-not-allowed rounded" 
+                      {study.status !== 'Active' && study.status !== 'Study start' && (userRole as string) !== 'System' && (userRole as string) !== 'Global Admin' ? (
+                        <button
+                          className="p-2 text-gray-400 cursor-not-allowed rounded"
                           title={
                             study.status === 'Study completed' ? 'Study has completed, no enrollments or payments can be made.' :
-                            study.status === 'Canceled/withdrawn' ? 'Study never started, no enrollments or payments can be made.' :
-                            'Study cannot be edited'
+                              study.status === 'Canceled/withdrawn' ? 'Study never started, no enrollments or payments can be made.' :
+                                'Study cannot be edited'
                           }
                           disabled
                         >
@@ -557,19 +517,19 @@ export function Studies() {
                         </button>
                       ) : (
                         <>
-                          <button 
+                          <button
                             onClick={() => {
                               setEditingStudy(study);
                               setEnrolledParticipants(study.participantList || []);
                               setStudyLocations(study.locations || []);
                               setShowSetupPanel(true);
                             }}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded" 
+                            className="p-2 text-green-600 hover:bg-green-50 rounded"
                             title="Edit"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             onClick={() => {
                               setEditingStudy(study);
                               setActiveTab('participants');
@@ -577,12 +537,12 @@ export function Studies() {
                               setStudyLocations(study.locations || []);
                               setShowSetupPanel(true);
                             }}
-                            className="p-2 text-purple-600 hover:bg-purple-50 rounded" 
+                            className="p-2 text-purple-600 hover:bg-purple-50 rounded"
                             title="Manage Participants"
                           >
                             <Users size={16} />
                           </button>
-                          <button 
+                          <button
                             onClick={() => {
                               setEditingStudy(study);
                               setActiveTab('paymentSchedule');
@@ -590,14 +550,14 @@ export function Studies() {
                               setStudyLocations(study.locations || []);
                               setShowSetupPanel(true);
                             }}
-                            className="p-2 text-orange-600 hover:bg-orange-50 rounded" 
+                            className="p-2 text-orange-600 hover:bg-orange-50 rounded"
                             title="Payment Schedule"
                           >
                             <DollarSign size={16} />
                           </button>
-                          <button 
+                          <button
                             onClick={() => setDeletingStudy(study)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded" 
+                            className="p-2 text-red-600 hover:bg-red-50 rounded"
                             title="Archive"
                           >
                             <Archive size={16} />
@@ -611,7 +571,7 @@ export function Studies() {
             </tbody>
           </table>
         </div>
-        
+
         <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
           <p className="text-gray-600">Showing {filteredStudies.length} of {studies.length} studies</p>
           <div className="flex gap-2">
@@ -653,17 +613,16 @@ export function Studies() {
                   <X size={20} />
                 </button>
               </div>
-              
+
               {/* Tabs Navigation */}
               <div className="px-6">
                 <div className="flex gap-1 border-b border-gray-200">
                   <button
                     onClick={() => setActiveTab('details')}
-                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeTab === 'details'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
+                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'details'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     Details
                   </button>
@@ -671,41 +630,37 @@ export function Studies() {
                     <>
                       <button
                         onClick={() => setActiveTab('locations')}
-                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                          activeTab === 'locations'
-                            ? 'border-blue-600 text-blue-600'
-                            : 'border-transparent text-gray-600 hover:text-gray-900'
-                        }`}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'locations'
+                          ? 'border-blue-600 text-blue-600'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                          }`}
                       >
                         Locations
                       </button>
                       <button
                         onClick={() => setActiveTab('participants')}
-                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                          activeTab === 'participants'
-                            ? 'border-blue-600 text-blue-600'
-                            : 'border-transparent text-gray-600 hover:text-gray-900'
-                        }`}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'participants'
+                          ? 'border-blue-600 text-blue-600'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                          }`}
                       >
                         Participants
                       </button>
                       <button
                         onClick={() => setActiveTab('paymentSchedule')}
-                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                          activeTab === 'paymentSchedule'
-                            ? 'border-blue-600 text-blue-600'
-                            : 'border-transparent text-gray-600 hover:text-gray-900'
-                        }`}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'paymentSchedule'
+                          ? 'border-blue-600 text-blue-600'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                          }`}
                       >
                         Payment Schedule
                       </button>
                       <button
                         onClick={() => setActiveTab('history')}
-                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                          activeTab === 'history'
-                            ? 'border-blue-600 text-blue-600'
-                            : 'border-transparent text-gray-600 hover:text-gray-900'
-                        }`}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'history'
+                          ? 'border-blue-600 text-blue-600'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                          }`}
                       >
                         Audit History
                       </button>
@@ -722,14 +677,14 @@ export function Studies() {
                   {/* Basic Information */}
                   <div className="space-y-4">
                     <h3 className="text-lg border-b pb-2">Basic Information</h3>
-                    
+
                     <div>
                       <label className="block text-sm mb-1 text-gray-700">Study Name *</label>
                       {isViewMode ? (
                         <p className="text-gray-900 py-2">{viewingStudy.name}</p>
                       ) : (
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           placeholder="Enter study name"
                           defaultValue={editingStudy?.name || ''}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -743,8 +698,8 @@ export function Studies() {
                         {isViewMode ? (
                           <p className="text-gray-900 py-2">{viewingStudy.irb}</p>
                         ) : (
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             placeholder="e.g., IRB-2025-345"
                             defaultValue={editingStudy?.irb || ''}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -757,8 +712,8 @@ export function Studies() {
                         {isViewMode ? (
                           <p className="text-gray-900 py-2">{viewingStudy.protocol}</p>
                         ) : (
-                          <input 
-                            type="text" 
+                          <input
+                            type="text"
                             placeholder="e.g., PROTO-CHS-2026"
                             defaultValue={editingStudy?.protocol || ''}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -772,7 +727,7 @@ export function Studies() {
                       {isViewMode ? (
                         <p className="text-gray-900 py-2">{viewingStudy.status}</p>
                       ) : (
-                        <select 
+                        <select
                           defaultValue={editingStudy?.status || ''}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
@@ -789,14 +744,14 @@ export function Studies() {
                   {/* Study Team */}
                   <div className="space-y-4">
                     <h3 className="text-lg border-b pb-2">Study Team</h3>
-                    
+
                     <div>
                       <label className="block text-sm mb-1 text-gray-700">Principal Investigator *</label>
                       {isViewMode ? (
                         <p className="text-gray-900 py-2">{viewingStudy.pi}</p>
                       ) : (
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           placeholder="Dr. Name"
                           defaultValue={editingStudy?.pi || ''}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -809,15 +764,15 @@ export function Studies() {
                   {/* Timeline */}
                   <div className="space-y-4">
                     <h3 className="text-lg border-b pb-2">Study Timeline</h3>
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm mb-1 text-gray-700">Start Date *</label>
                         {isViewMode ? (
                           <p className="text-gray-900 py-2">{viewingStudy.startDate}</p>
                         ) : (
-                          <input 
-                            type="date" 
+                          <input
+                            type="date"
                             defaultValue={editingStudy?.startDate || ''}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
@@ -829,8 +784,8 @@ export function Studies() {
                         {isViewMode ? (
                           <p className="text-gray-900 py-2">{viewingStudy.endDate}</p>
                         ) : (
-                          <input 
-                            type="date" 
+                          <input
+                            type="date"
                             defaultValue={editingStudy?.endDate || ''}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
@@ -842,13 +797,13 @@ export function Studies() {
                   {/* Study Description */}
                   <div className="space-y-4">
                     <h3 className="text-lg border-b pb-2">Study Description</h3>
-                    
+
                     <div>
                       <label className="block text-sm mb-1 text-gray-700">Description</label>
                       {isViewMode ? (
                         <p className="text-gray-900 py-2">A comprehensive research study investigating the effects and outcomes of cardiovascular health interventions.</p>
                       ) : (
-                        <textarea 
+                        <textarea
                           rows={4}
                           placeholder="Enter study description and objectives"
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -860,12 +815,12 @@ export function Studies() {
                   {/* Billing Settings */}
                   <div className="space-y-4">
                     <h3 className="text-lg border-b pb-2">Billing Settings</h3>
-                    
+
                     <div>
                       {isViewMode ? (
                         <div className="flex items-center gap-2 py-2">
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             id="allowTravelInvoicing"
                             defaultChecked={true}
                             disabled
@@ -877,8 +832,8 @@ export function Studies() {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
-                          <input 
-                            type="checkbox" 
+                          <input
+                            type="checkbox"
                             id="allowTravelInvoicing"
                             defaultChecked={editingStudy?.allowTravelInvoicing || false}
                             className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
@@ -893,7 +848,7 @@ export function Studies() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4 border-t">
-                    <button 
+                    <button
                       onClick={() => handleCloseSetupPanel()}
                       className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                     >
@@ -958,7 +913,7 @@ export function Studies() {
                         {showLocationDropdown && locationSearch && (
                           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                             {availableLocations
-                              .filter(location => 
+                              .filter(location =>
                                 location.toLowerCase().includes(locationSearch.toLowerCase()) &&
                                 !studyLocations.includes(location)
                               )
@@ -976,12 +931,12 @@ export function Studies() {
                                   <div className="text-sm">{location}</div>
                                 </button>
                               ))}
-                            {availableLocations.filter(location => 
+                            {availableLocations.filter(location =>
                               location.toLowerCase().includes(locationSearch.toLowerCase()) &&
                               !studyLocations.includes(location)
                             ).length === 0 && (
-                              <div className="px-4 py-3 text-sm text-gray-500 text-center">No locations found</div>
-                            )}
+                                <div className="px-4 py-3 text-sm text-gray-500 text-center">No locations found</div>
+                              )}
                           </div>
                         )}
                       </div>
@@ -1109,32 +1064,31 @@ export function Studies() {
                                   const participant = allParticipants.find(p => p.id === participantId);
                                   const searchLower = detailsParticipantSearch.toLowerCase();
                                   return participantId.toLowerCase().includes(searchLower) ||
-                                         participant?.name.toLowerCase().includes(searchLower) ||
-                                         false;
+                                    participant?.name.toLowerCase().includes(searchLower) ||
+                                    false;
                                 })
                                 .map((participantId: string) => {
-                                const participant = allParticipants.find(p => p.id === participantId);
-                                return (
-                                  <tr key={participantId} className="hover:bg-gray-50">
-                                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                                      {participantId}
-                                    </td>
-                                    <td className="px-4 py-3 text-sm text-gray-900">
-                                      {participant?.name || '-'}
-                                    </td>
-                                    <td className="px-4 py-3 text-sm">
-                                      <span className={`px-2 py-1 rounded-full text-xs ${
-                                        (participantRules[participantId]?.status || 'Registered') === 'Registered' ? 'bg-blue-100 text-blue-800' :
-                                        (participantRules[participantId]?.status || 'Registered') === 'Completed' ? 'bg-gray-100 text-gray-800' :
-                                        (participantRules[participantId]?.status || 'Registered') === 'Inactive' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-green-100 text-green-800'
-                                      }`}>
-                                        {participantRules[participantId]?.status || 'Registered'}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                                  const participant = allParticipants.find(p => p.id === participantId);
+                                  return (
+                                    <tr key={participantId} className="hover:bg-gray-50">
+                                      <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                        {participantId}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm text-gray-900">
+                                        {participant?.name || '-'}
+                                      </td>
+                                      <td className="px-4 py-3 text-sm">
+                                        <span className={`px-2 py-1 rounded-full text-xs ${(participantRules[participantId]?.status || 'Registered') === 'Registered' ? 'bg-blue-100 text-blue-800' :
+                                          (participantRules[participantId]?.status || 'Registered') === 'Completed' ? 'bg-gray-100 text-gray-800' :
+                                            (participantRules[participantId]?.status || 'Registered') === 'Inactive' ? 'bg-yellow-100 text-yellow-800' :
+                                              'bg-green-100 text-green-800'
+                                          }`}>
+                                          {participantRules[participantId]?.status || 'Registered'}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
                             </tbody>
                           </table>
                         </div>
@@ -1169,12 +1123,12 @@ export function Studies() {
                               const waiveSSN = existingRules?.waiveSSN || 'No';
                               const withholdTaxes = existingRules?.withholdTaxes || 'No';
                               const status = existingRules?.status || 'Registered';
-                              
+
                               setRuleStudyParticipantId(studyId);
                               setRuleWaiveSSN(waiveSSN);
                               setRuleWithholdTaxes(withholdTaxes);
                               setRuleStatus(status);
-                              
+
                               // Store original values for change detection
                               setOriginalRuleValues({
                                 studyParticipantId: studyId,
@@ -1267,14 +1221,14 @@ export function Studies() {
                                     toast.error('Study Participant ID is required');
                                     return;
                                   }
-                                  
+
                                   // Check if any rules have been modified
-                                  const hasChanges = 
+                                  const hasChanges =
                                     originalRuleValues.studyParticipantId !== ruleStudyParticipantId ||
                                     originalRuleValues.waiveSSN !== ruleWaiveSSN ||
                                     originalRuleValues.withholdTaxes !== ruleWithholdTaxes ||
                                     originalRuleValues.status !== ruleStatus;
-                                  
+
                                   if (hasChanges) {
                                     // Show confirmation dialog
                                     setShowRulesConfirmation(true);
@@ -1409,7 +1363,7 @@ export function Studies() {
                             <label className="block text-xs font-medium text-gray-700 mb-1">
                               Type <span className="text-red-500">*</span>
                             </label>
-                            <select 
+                            <select
                               value={newVisitType}
                               onChange={(e) => setNewVisitType(e.target.value)}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
@@ -1449,7 +1403,7 @@ export function Studies() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              
+
                               // Validation
                               if (!newVisitId.trim()) {
                                 toast.error('Visit ID is required');
@@ -1467,17 +1421,16 @@ export function Studies() {
                                 toast.error('Payment Amount is required');
                                 return;
                               }
-                              
+
                               // Duplicate check - check against existing visits
-                              const currentStudy = (isViewMode ? viewingStudy : editingStudy);
                               const existingVisits = visitOrder.length > 0 ? visitOrder : [];
                               const isDuplicate = existingVisits.some((visit: any) => visit.id === newVisitId.trim());
-                              
+
                               if (isDuplicate) {
                                 toast.error(`Visit ID "${newVisitId}" already exists. Please use a unique Visit ID.`);
                                 return;
                               }
-                              
+
                               // Add the new visit
                               const newVisit = {
                                 id: newVisitId.trim(),
@@ -1485,12 +1438,12 @@ export function Studies() {
                                 type: newVisitType,
                                 payment: newVisitPayment.trim()
                               };
-                              
+
                               setVisitOrder([...visitOrder, newVisit]);
                               setHasVisitChanges(true);
-                              
+
                               toast.success('Visit added successfully');
-                              
+
                               // Reset form
                               setNewVisitId('');
                               setNewVisitName('');
@@ -1540,7 +1493,7 @@ export function Studies() {
                       // Filter visits based on search
                       if (visitSearch) {
                         const searchLower = visitSearch.toLowerCase();
-                        displayVisits = displayVisits.filter((visit) => 
+                        displayVisits = displayVisits.filter((visit) =>
                           visit.id.toLowerCase().includes(searchLower) ||
                           visit.name.toLowerCase().includes(searchLower) ||
                           visit.type.toLowerCase().includes(searchLower) ||
@@ -1562,12 +1515,12 @@ export function Studies() {
                       const handleDragOver = (e: React.DragEvent, index: number) => {
                         e.preventDefault();
                         if (draggedIndex === null || draggedIndex === index || isViewMode) return;
-                        
+
                         const newOrder = [...displayVisits];
                         const draggedItem = newOrder[draggedIndex];
                         newOrder.splice(draggedIndex, 1);
                         newOrder.splice(index, 0, draggedItem);
-                        
+
                         setVisitOrder(newOrder);
                         setDraggedIndex(index);
                         setHasVisitChanges(true);
@@ -1576,7 +1529,7 @@ export function Studies() {
                       const handleDragEnd = () => {
                         setDraggedIndex(null);
                       };
-                      
+
                       return visits.length > 0 ? (
                         <div className="border border-gray-300 rounded-lg overflow-hidden">
                           <div className="overflow-x-auto">
@@ -1607,8 +1560,8 @@ export function Studies() {
                               </thead>
                               <tbody className="bg-white divide-y divide-gray-200">
                                 {displayVisits.map((visit, index) => (
-                                  <tr 
-                                    key={visit.id} 
+                                  <tr
+                                    key={visit.id}
                                     className={`hover:bg-gray-50 ${draggedIndex === index ? 'opacity-50' : ''}`}
                                     draggable={!isViewMode}
                                     onDragStart={() => handleDragStart(index)}
@@ -1669,7 +1622,7 @@ export function Studies() {
                                     </td>
                                     {!isViewMode && (
                                       <td className="px-4 py-3 text-sm text-center">
-                                        <button 
+                                        <button
                                           onClick={() => {
                                             toast.success('Visit archived');
                                           }}
@@ -1727,7 +1680,7 @@ export function Studies() {
                         </div>
                         {showPriorVersions ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
                       </button>
-                      
+
                       {showPriorVersions && (
                         <div className="border-t p-4 space-y-4 bg-gray-50">
                           <div>
@@ -1771,7 +1724,7 @@ export function Studies() {
                               ],
                             };
                             const priorVisits = priorVersionData[selectedPriorVersion] || [];
-                            
+
                             return (
                               <div>
                                 <div className="flex items-center justify-between mb-3">
@@ -1780,7 +1733,7 @@ export function Studies() {
                                   </h5>
                                   <span className="text-xs text-gray-500 italic">Read-only view</span>
                                 </div>
-                                
+
                                 {priorVisits.length > 0 ? (
                                   <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
                                     <div className="overflow-x-auto">
@@ -1850,7 +1803,7 @@ export function Studies() {
               {activeTab === 'history' && (
                 <div className="space-y-4">
                   <h3 className="text-lg border-b pb-2">Audit History</h3>
-                  
+
                   <div className="space-y-3">
                     <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
                       <div className="flex items-start justify-between mb-1">
@@ -1905,22 +1858,21 @@ export function Studies() {
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                  dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
-                }`}
+                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
+                  }`}
               >
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
                     <Upload className="text-blue-600" size={32} />
                   </div>
-                  
+
                   {uploadedFile ? (
                     <div className="space-y-2">
                       <p className="text-gray-900">{uploadedFile.name}</p>
                       <p className="text-sm text-gray-500">
                         {(uploadedFile.size / 1024).toFixed(2)} KB
                       </p>
-                      <button 
+                      <button
                         onClick={() => setUploadedFile(null)}
                         className="text-sm text-red-600 hover:underline"
                       >
@@ -1992,7 +1944,7 @@ export function Studies() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => {
                     setShowUploadModal(false);
                     setUploadedFile(null);
@@ -2001,7 +1953,7 @@ export function Studies() {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   disabled={!uploadedFile}
                   className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
@@ -2073,13 +2025,13 @@ export function Studies() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => setShowExportModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     // Export logic would go here
                     setShowExportModal(false);
@@ -2117,22 +2069,21 @@ export function Studies() {
                 onDragLeave={handleDragParticipants}
                 onDragOver={handleDragParticipants}
                 onDrop={handleDropParticipants}
-                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                  dragActiveParticipants ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
-                }`}
+                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${dragActiveParticipants ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'
+                  }`}
               >
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
                     <Upload className="text-blue-600" size={32} />
                   </div>
-                  
+
                   {uploadedParticipantsFile ? (
                     <div className="space-y-2">
                       <p className="text-gray-900">{uploadedParticipantsFile.name}</p>
                       <p className="text-sm text-gray-500">
                         {(uploadedParticipantsFile.size / 1024).toFixed(2)} KB
                       </p>
-                      <button 
+                      <button
                         onClick={() => setUploadedParticipantsFile(null)}
                         className="text-sm text-red-600 hover:underline"
                       >
@@ -2200,7 +2151,7 @@ export function Studies() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => {
                     setShowUploadParticipantsModal(false);
                     setUploadedParticipantsFile(null);
@@ -2209,7 +2160,7 @@ export function Studies() {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   disabled={!uploadedParticipantsFile}
                   className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
@@ -2259,22 +2210,21 @@ export function Studies() {
                 onDragLeave={handleDragVisits}
                 onDragOver={handleDragVisits}
                 onDrop={handleDropVisits}
-                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                  dragActiveVisits ? 'border-purple-500 bg-purple-50' : 'border-gray-300 bg-gray-50'
-                }`}
+                className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${dragActiveVisits ? 'border-purple-500 bg-purple-50' : 'border-gray-300 bg-gray-50'
+                  }`}
               >
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
                     <Upload className="text-purple-600" size={32} />
                   </div>
-                  
+
                   {uploadedVisitsFile ? (
                     <div className="space-y-2">
                       <p className="text-gray-900">{uploadedVisitsFile.name}</p>
                       <p className="text-sm text-gray-500">
                         {(uploadedVisitsFile.size / 1024).toFixed(2)} KB
                       </p>
-                      <button 
+                      <button
                         onClick={() => setUploadedVisitsFile(null)}
                         className="text-sm text-red-600 hover:underline"
                       >
@@ -2346,7 +2296,7 @@ export function Studies() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => {
                     setShowUploadVisitsModal(false);
                     setUploadedVisitsFile(null);
@@ -2355,7 +2305,7 @@ export function Studies() {
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   disabled={!uploadedVisitsFile}
                   onClick={() => {
                     if (uploadedVisitsFile) {
@@ -2441,13 +2391,13 @@ export function Studies() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => setShowExportParticipantsModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     // Export logic would go here
                     toast.success('Participant data exported successfully');
@@ -2524,13 +2474,13 @@ export function Studies() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <button 
+                <button
                   onClick={() => setShowExportVisitsModal(false)}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     // Export logic would go here
                     toast.success('Visit data exported successfully');

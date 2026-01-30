@@ -1,0 +1,2 @@
+﻿components/Participants.tsx(750,42): error TS6133: 'e' is declared but its value is never read.
+components/Participants.tsx(769,42): error TS6133: 'e' is declared but its value is never read.

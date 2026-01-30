@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Plus, Edit, Eye, Trash2, X, Shield, Users, Key, ChevronDown, ChevronUp, UserPlus, UserMinus, Check, RefreshCw, AlertCircle } from 'lucide-react';
+import { Search, Edit, Eye, X, Shield, Users, Key, ChevronDown, ChevronUp, Check, RefreshCw, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { securityUsers } from './SecurityUsersData';
 
@@ -8,29 +8,27 @@ export function Security() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showKPIs, setShowKPIs] = useState(false);
   const [roleFilter, setRoleFilter] = useState('');
-  
+
   // User Management
   const [showUserModal, setShowUserModal] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
   const [viewingUser, setViewingUser] = useState<any>(null);
   const [userModalTab, setUserModalTab] = useState<'details' | 'role'>('details');
-  
+
   // Role Management
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [editingRole, setEditingRole] = useState<any>(null);
   const [viewingRole, setViewingRole] = useState<any>(null);
   const [roleModalTab, setRoleModalTab] = useState<'details' | 'permissions'>('details');
-  
+
   // User-Role Assignment
   const [showAssignRoleModal, setShowAssignRoleModal] = useState(false);
-  const [assigningUser, setAssigningUser] = useState<any>(null);
-  
+  const [assigningUser] = useState<any>(null);
+
   // Study and Location Search
-  const [studySearchTerm, setStudySearchTerm] = useState('');
   const [locationSearchTerm, setLocationSearchTerm] = useState('');
-  const [showStudyDropdown, setShowStudyDropdown] = useState(false);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
-  
+
   // Refresh Users from IDP
   const [showRefreshModal, setShowRefreshModal] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -268,9 +266,9 @@ export function Security() {
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.department.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesRole = !roleFilter || user.role === roleFilter;
-    
+
     return matchesSearch && matchesRole;
   });
 
@@ -331,7 +329,7 @@ export function Security() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setShowKPIs(!showKPIs)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title={showKPIs ? 'Hide Statistics' : 'Show Statistics'}
@@ -339,7 +337,7 @@ export function Security() {
             {showKPIs ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
           {activeTab === 'users' && (
-            <button 
+            <button
               onClick={() => {
                 setShowRefreshModal(true);
                 setRefreshStatus('idle');
@@ -400,11 +398,10 @@ export function Security() {
                 setActiveTab('users');
                 setSearchTerm('');
               }}
-              className={`py-4 px-1 border-b-2 transition-colors ${
-                activeTab === 'users'
+              className={`py-4 px-1 border-b-2 transition-colors ${activeTab === 'users'
                   ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-2">
                 <Users size={20} />
@@ -416,11 +413,10 @@ export function Security() {
                 setActiveTab('roles');
                 setSearchTerm('');
               }}
-              className={`py-4 px-1 border-b-2 transition-colors ${
-                activeTab === 'roles'
+              className={`py-4 px-1 border-b-2 transition-colors ${activeTab === 'roles'
                   ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-2">
                 <Shield size={20} />
@@ -447,7 +443,7 @@ export function Security() {
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                
+
                 {/* Role Filter */}
                 <select
                   value={roleFilter}
@@ -509,36 +505,35 @@ export function Security() {
                             )}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              user.status === 'Active' ? 'bg-green-100 text-green-800' : 
-                              user.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span className={`px-3 py-1 rounded-full text-sm ${user.status === 'Active' ? 'bg-green-100 text-green-800' :
+                                user.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-gray-100 text-gray-800'
+                              }`}>
                               {user.status}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <button 
+                              <button
                                 onClick={() => setViewingUser(user)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded" 
+                                className="p-2 text-blue-600 hover:bg-blue-50 rounded"
                                 title="View"
                               >
                                 <Eye size={16} />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => setEditingUser(user)}
-                                className="p-2 text-green-600 hover:bg-green-50 rounded" 
+                                className="p-2 text-green-600 hover:bg-green-50 rounded"
                                 title="Edit"
                               >
                                 <Edit size={16} />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => {
                                   setViewingUser(user);
                                   setUserModalTab('role');
                                 }}
-                                className="p-2 text-purple-600 hover:bg-purple-50 rounded" 
+                                className="p-2 text-purple-600 hover:bg-purple-50 rounded"
                                 title="Assign Role"
                               >
                                 <Shield size={16} />
@@ -594,27 +589,26 @@ export function Security() {
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600 max-w-md">{role.description}</td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              role.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span className={`px-3 py-1 rounded-full text-sm ${role.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                              }`}>
                               {role.status}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <button 
+                              <button
                                 onClick={() => setViewingRole(role)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded" 
+                                className="p-2 text-blue-600 hover:bg-blue-50 rounded"
                                 title="View"
                               >
                                 <Eye size={16} />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => {
                                   setViewingRole(role);
                                   setRoleModalTab('permissions');
                                 }}
-                                className="p-2 text-purple-600 hover:bg-purple-50 rounded" 
+                                className="p-2 text-purple-600 hover:bg-purple-50 rounded"
                                 title="View Permissions"
                               >
                                 <Key size={16} />
@@ -646,7 +640,7 @@ export function Security() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold">Refresh Users from IDP</h3>
                 {!isRefreshing && (
-                  <button 
+                  <button
                     onClick={() => {
                       setShowRefreshModal(false);
                       setRefreshStatus('idle');
@@ -773,11 +767,10 @@ export function Security() {
                   <div className="flex gap-6">
                     <button
                       onClick={() => setUserModalTab('details')}
-                      className={`py-3 px-1 border-b-2 transition-colors ${
-                        userModalTab === 'details'
+                      className={`py-3 px-1 border-b-2 transition-colors ${userModalTab === 'details'
                           ? 'border-blue-600 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <Shield size={18} />
@@ -786,11 +779,10 @@ export function Security() {
                     </button>
                     <button
                       onClick={() => setUserModalTab('role')}
-                      className={`py-3 px-1 border-b-2 transition-colors ${
-                        userModalTab === 'role'
+                      className={`py-3 px-1 border-b-2 transition-colors ${userModalTab === 'role'
                           ? 'border-blue-600 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <Key size={18} />
@@ -805,7 +797,7 @@ export function Security() {
                   {userModalTab === 'details' && (
                     <div>
                       <h3 className="text-lg border-b pb-2 mb-4">User Information</h3>
-                      
+
                       {/* Compact User Details Summary (Read-only from IDP) */}
                       <div className="bg-gray-50 rounded-lg p-4 mb-6">
                         <div className="space-y-1">
@@ -827,9 +819,8 @@ export function Security() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="text-sm text-gray-600 w-32">Status:</span>
-                            <span className={`text-sm px-2 py-0.5 rounded-full ${
-                              currentUser?.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span className={`text-sm px-2 py-0.5 rounded-full ${currentUser?.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                              }`}>
                               {currentUser?.status || 'N/A'}
                             </span>
                           </div>
@@ -875,7 +866,7 @@ export function Security() {
                                 {showLocationDropdown && locationSearchTerm && (
                                   <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                     {availableLocations
-                                      .filter(location => 
+                                      .filter(location =>
                                         location.toLowerCase().includes(locationSearchTerm.toLowerCase()) &&
                                         !currentUser.assignedLocations.includes(location)
                                       )
@@ -892,12 +883,12 @@ export function Security() {
                                           <div className="text-sm">{location}</div>
                                         </button>
                                       ))}
-                                    {availableLocations.filter(location => 
+                                    {availableLocations.filter(location =>
                                       location.toLowerCase().includes(locationSearchTerm.toLowerCase()) &&
                                       !currentUser.assignedLocations.includes(location)
                                     ).length === 0 && (
-                                      <div className="px-4 py-3 text-sm text-gray-500 text-center">No locations found</div>
-                                    )}
+                                        <div className="px-4 py-3 text-sm text-gray-500 text-center">No locations found</div>
+                                      )}
                                   </div>
                                 )}
                               </div>
@@ -949,24 +940,22 @@ export function Security() {
                           Current: {currentUser.role}
                         </span>
                       </div>
-                      
+
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                         <p className="text-sm text-gray-700">
                           <strong>Note:</strong> {isUserModalViewMode ? 'This role is currently assigned to this user.' : 'Select one role for this user. The user will inherit all permissions from the selected role.'}
                         </p>
                       </div>
-                      
+
                       <div className="space-y-2">
                         {roles.map((role) => {
                           const isAssigned = currentUser.role === role.name;
                           return (
-                            <label 
-                              key={role.id} 
-                              className={`flex items-center justify-between p-4 border rounded-lg ${
-                                isUserModalViewMode ? '' : 'cursor-pointer hover:bg-gray-50'
-                              } ${
-                                isAssigned ? 'border-purple-300 bg-purple-50' : 'border-gray-200'
-                              }`}
+                            <label
+                              key={role.id}
+                              className={`flex items-center justify-between p-4 border rounded-lg ${isUserModalViewMode ? '' : 'cursor-pointer hover:bg-gray-50'
+                                } ${isAssigned ? 'border-purple-300 bg-purple-50' : 'border-gray-200'
+                                }`}
                             >
                               <div className="flex items-center gap-3 flex-1">
                                 <input
@@ -1007,7 +996,7 @@ export function Security() {
               <div className="p-6 space-y-6">
                 <div>
                   <h3 className="text-lg border-b pb-2 mb-4">Search IDP User</h3>
-                  
+
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -1022,7 +1011,7 @@ export function Security() {
                   {/* IDP Search Results */}
                   {idpSearchTerm && !selectedIdpUser && (
                     <div className="mt-3 border border-gray-300 rounded-lg max-h-64 overflow-y-auto">
-                      {idpUsers.filter(user => 
+                      {idpUsers.filter(user =>
                         user.firstName.toLowerCase().includes(idpSearchTerm.toLowerCase()) ||
                         user.lastName.toLowerCase().includes(idpSearchTerm.toLowerCase()) ||
                         user.kumcUsername.toLowerCase().includes(idpSearchTerm.toLowerCase())
@@ -1040,13 +1029,13 @@ export function Security() {
                           <div className="text-xs text-gray-500">{user.department}</div>
                         </button>
                       ))}
-                      {idpUsers.filter(user => 
+                      {idpUsers.filter(user =>
                         user.firstName.toLowerCase().includes(idpSearchTerm.toLowerCase()) ||
                         user.lastName.toLowerCase().includes(idpSearchTerm.toLowerCase()) ||
                         user.kumcUsername.toLowerCase().includes(idpSearchTerm.toLowerCase())
                       ).length === 0 && (
-                        <div className="px-4 py-3 text-sm text-gray-500 text-center">No users found</div>
-                      )}
+                          <div className="px-4 py-3 text-sm text-gray-500 text-center">No users found</div>
+                        )}
                     </div>
                   )}
 
@@ -1089,11 +1078,10 @@ export function Security() {
                         <p className="text-sm text-gray-600 mb-3">Select one role for this user:</p>
                         <div className="space-y-2">
                           {roles.map((role) => (
-                            <label 
-                              key={role.id} 
-                              className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                                selectedUserRole === role.name ? 'border-purple-300 bg-purple-50' : 'border-gray-200'
-                              }`}
+                            <label
+                              key={role.id}
+                              className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedUserRole === role.name ? 'border-purple-300 bg-purple-50' : 'border-gray-200'
+                                }`}
                             >
                               <div className="flex items-center gap-3 flex-1">
                                 <input
@@ -1148,7 +1136,7 @@ export function Security() {
                           {showLocationDropdown && locationSearchTerm && (
                             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                               {availableLocations
-                                .filter(location => 
+                                .filter(location =>
                                   location.toLowerCase().includes(locationSearchTerm.toLowerCase()) &&
                                   !selectedUserLocations.includes(location)
                                 )
@@ -1165,12 +1153,12 @@ export function Security() {
                                     <div className="text-sm">{location}</div>
                                   </button>
                                 ))}
-                              {availableLocations.filter(location => 
+                              {availableLocations.filter(location =>
                                 location.toLowerCase().includes(locationSearchTerm.toLowerCase()) &&
                                 !selectedUserLocations.includes(location)
                               ).length === 0 && (
-                                <div className="px-4 py-3 text-sm text-gray-500 text-center">No locations found</div>
-                              )}
+                                  <div className="px-4 py-3 text-sm text-gray-500 text-center">No locations found</div>
+                                )}
                             </div>
                           )}
                         </div>
@@ -1183,14 +1171,14 @@ export function Security() {
 
             <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4">
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={handleCloseUserPanel}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   {isUserModalViewMode ? 'Close' : 'Cancel'}
                 </button>
                 {!isUserModalViewMode && (
-                  <button 
+                  <button
                     onClick={() => {
                       toast.success(isUserModalEditMode ? 'User updated successfully' : 'User added successfully');
                       handleCloseUserPanel();
@@ -1230,11 +1218,10 @@ export function Security() {
                   <div className="flex gap-6">
                     <button
                       onClick={() => setRoleModalTab('details')}
-                      className={`py-3 px-1 border-b-2 transition-colors ${
-                        roleModalTab === 'details'
+                      className={`py-3 px-1 border-b-2 transition-colors ${roleModalTab === 'details'
                           ? 'border-blue-600 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <Shield size={18} />
@@ -1243,11 +1230,10 @@ export function Security() {
                     </button>
                     <button
                       onClick={() => setRoleModalTab('permissions')}
-                      className={`py-3 px-1 border-b-2 transition-colors ${
-                        roleModalTab === 'permissions'
+                      className={`py-3 px-1 border-b-2 transition-colors ${roleModalTab === 'permissions'
                           ? 'border-blue-600 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <Key size={18} />
@@ -1262,7 +1248,7 @@ export function Security() {
                   {roleModalTab === 'details' && (
                     <div>
                       <h3 className="text-lg border-b pb-2 mb-4">Role Information</h3>
-                      
+
                       <div>
                         <label className="block text-gray-700 mb-2">Role Name</label>
                         <p className="py-2 text-gray-900">{currentRole?.name}</p>
@@ -1276,9 +1262,8 @@ export function Security() {
                       <div className="mt-4">
                         <label className="block text-gray-700 mb-2">Status</label>
                         <p className="py-2">
-                          <span className={`px-3 py-1 rounded-full text-sm ${
-                            currentRole.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-sm ${currentRole.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                            }`}>
                             {currentRole.status}
                           </span>
                         </p>
@@ -1307,9 +1292,8 @@ export function Security() {
                                     <td className="px-4 py-3 text-sm text-gray-600">{user.email}</td>
                                     <td className="px-4 py-3 text-sm">{user.department}</td>
                                     <td className="px-4 py-3">
-                                      <span className={`px-2 py-1 rounded-full text-xs ${
-                                        user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                                      }`}>
+                                      <span className={`px-2 py-1 rounded-full text-xs ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                        }`}>
                                         {user.status}
                                       </span>
                                     </td>
@@ -1337,13 +1321,13 @@ export function Security() {
                           {currentRole.permissions.length} of {allPermissions.length} selected
                         </span>
                       </div>
-                      
+
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                         <p className="text-sm text-gray-700">
                           <strong>Note:</strong> These permissions are currently assigned to this role.
                         </p>
                       </div>
-                      
+
                       <div className="border border-gray-300 rounded-lg overflow-hidden">
                         {Object.entries(groupPermissionsByCategory()).map(([category, perms], idx) => (
                           <div key={category} className={idx > 0 ? 'border-t border-gray-200' : ''}>
@@ -1375,7 +1359,7 @@ export function Security() {
 
                 <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4">
                   <div className="flex gap-3">
-                    <button 
+                    <button
                       onClick={handleCloseRolePanel}
                       className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
@@ -1410,11 +1394,10 @@ export function Security() {
                 {roles.map((role) => {
                   const isAssigned = assigningUser.role === role.name;
                   return (
-                    <label 
-                      key={role.id} 
-                      className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                        isAssigned ? 'border-purple-300 bg-purple-50' : 'border-gray-200'
-                      }`}
+                    <label
+                      key={role.id}
+                      className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${isAssigned ? 'border-purple-300 bg-purple-50' : 'border-gray-200'
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <input
@@ -1436,13 +1419,13 @@ export function Security() {
             </div>
 
             <div className="border-t border-gray-200 px-6 py-4 flex gap-3">
-              <button 
+              <button
                 onClick={() => setShowAssignRoleModal(false)}
                 className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={() => {
                   toast.success('Role updated successfully');
                   setShowAssignRoleModal(false);

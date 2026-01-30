@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { Search, Building2, MapPin, Archive, ChevronDown, ChevronUp, X, Briefcase, Eye, Clock } from 'lucide-react';
-import { toast } from 'sonner';
+import { Search, Building2, MapPin, ChevronDown, ChevronUp, X, Briefcase, Eye } from 'lucide-react';
 
 export function OrganizationsLocations() {
   const [activeTab, setActiveTab] = useState<'organizations' | 'locations'>('locations');
   const [searchTerm, setSearchTerm] = useState('');
   const [showKPIs, setShowKPIs] = useState(false);
-  
+
   // Organizations state
   const [showOrgPanel, setShowOrgPanel] = useState(false);
   const [viewingOrg, setViewingOrg] = useState<any>(null);
-  const [orgPanelTab, setOrgPanelTab] = useState('details');
 
   // Locations state
   const [filterType, setFilterType] = useState('all');
@@ -18,9 +16,8 @@ export function OrganizationsLocations() {
   const [showLocationPanel, setShowLocationPanel] = useState(false);
   const [viewingLocation, setViewingLocation] = useState<any>(null);
   const [locationPanelTab, setLocationPanelTab] = useState('details');
-  
+
   // Search for Locations/Units in panel
-  const [locationsSearch, setLocationsSearch] = useState('');
   const [unitsSearch, setUnitsSearch] = useState('');
 
   // Mock Organizations data
@@ -37,22 +34,6 @@ export function OrganizationsLocations() {
     },
   ];
 
-  // Mock Organization Locations (Westwood, Corp, Remote)
-  const orgLocations = [
-    { id: 1, organizationId: 1, name: 'Main Research Center - Building A', code: 'MRC-A', status: 'Active' },
-    { id: 2, organizationId: 1, name: 'Outpatient Clinic - West Campus', code: 'OPC-W', status: 'Active' },
-    { id: 3, organizationId: 1, name: 'Home Visit - Johnson County Area', code: 'HV-JC', status: 'Active' },
-    { id: 7, organizationId: 1, name: 'Virtual/Remote Participation', code: 'VRT-RM', status: 'Active' },
-    { id: 4, organizationId: 1, name: 'Westwood', code: 'WW', status: 'Active' },
-    { id: 5, organizationId: 1, name: 'Corp', code: 'CP', status: 'Active' },
-    { id: 6, organizationId: 1, name: 'Remote', code: 'RM', status: 'Active' },
-  ];
-
-  // Mock Organization Units (Cancer Center, Radiology)
-  const orgUnits = [
-    { id: 1, organizationId: 1, name: 'Cancer Center', code: 'CC', status: 'Active', description: 'Cancer research and treatment' },
-    { id: 2, organizationId: 1, name: 'Radiology', code: 'RAD', status: 'Active', description: 'Diagnostic imaging services' },
-  ];
 
   // Mock Location Units - units associated with specific locations
   const locationUnits = [
@@ -65,8 +46,8 @@ export function OrganizationsLocations() {
 
   // Mock Locations data - now tied to Organizations
   const locations = [
-    { 
-      id: 1, 
+    {
+      id: 1,
       name: 'KUCC Westwood',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -85,8 +66,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 2, 
+    {
+      id: 2,
       name: 'CRC',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -105,8 +86,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: 'KUCC, Research Clinic'
     },
-    { 
-      id: 3, 
+    {
+      id: 3,
       name: 'KUCC-Overland Park',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -125,8 +106,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 4, 
+    {
+      id: 4,
       name: 'KUCC-East/Lee\'s Summit',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -145,8 +126,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 5, 
+    {
+      id: 5,
       name: 'KUCC-North',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -165,8 +146,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 6, 
+    {
+      id: 6,
       name: 'KUCC-Briarcliff',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -185,8 +166,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 7, 
+    {
+      id: 7,
       name: 'KUCC-Other',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -205,8 +186,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 8, 
+    {
+      id: 8,
       name: 'University of Kansas Medical Center',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -225,8 +206,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 9, 
+    {
+      id: 9,
       name: 'University of Kansas Health-Main',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -245,8 +226,8 @@ export function OrganizationsLocations() {
       contactPhone: '',
       notes: ''
     },
-    { 
-      id: 10, 
+    {
+      id: 10,
       name: 'University of Kansas-Midwest',
       organizationId: 1,
       organizationName: 'University of Kansas Medical Center',
@@ -267,13 +248,6 @@ export function OrganizationsLocations() {
     },
   ];
 
-  // Mock audit history
-  const auditHistory = [
-    { id: 1, date: '2025-01-20', user: 'John Smith', action: 'Added Location', details: 'Added Westwood location' },
-    { id: 2, date: '2025-01-15', user: 'Jane Doe', action: 'Added Unit', details: 'Added Cancer Center unit' },
-    { id: 3, date: '2025-01-10', user: 'Admin User', action: 'Updated Organization', details: 'Updated status to Active' },
-    { id: 4, date: '2025-01-05', user: 'System', action: 'Created Organization', details: 'Organization created in system' },
-  ];
 
   const filteredOrganizations = organizations.filter(org =>
     org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -283,9 +257,9 @@ export function OrganizationsLocations() {
 
   const filteredLocations = locations.filter(location => {
     const matchesSearch = location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.locationCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.organizationName.toLowerCase().includes(searchTerm.toLowerCase());
+      location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      location.locationCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      location.organizationName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || location.type === filterType;
     const matchesOrg = filterOrganization === 'all' || location.organizationId.toString() === filterOrganization;
     return matchesSearch && matchesType && matchesOrg;
@@ -294,8 +268,6 @@ export function OrganizationsLocations() {
   const handleCloseOrgPanel = () => {
     setShowOrgPanel(false);
     setViewingOrg(null);
-    setOrgPanelTab('details');
-    setLocationsSearch('');
     setUnitsSearch('');
   };
 
@@ -309,21 +281,11 @@ export function OrganizationsLocations() {
   const totalLocations = locations.length;
   const totalUnits = organizations.reduce((sum, org) => sum + org.unitsCount, 0);
 
-  const currentOrgLocations = orgLocations.filter(loc => 
-    loc.organizationId === viewingOrg?.id &&
-    loc.name.toLowerCase().includes(locationsSearch.toLowerCase())
-  );
-  
-  const currentOrgUnits = orgUnits.filter(unit => 
-    unit.organizationId === viewingOrg?.id &&
-    (unit.name.toLowerCase().includes(unitsSearch.toLowerCase()) ||
-     unit.description.toLowerCase().includes(unitsSearch.toLowerCase()))
-  );
 
-  const currentLocationUnits = locationUnits.filter(unit => 
+  const currentLocationUnits = locationUnits.filter(unit =>
     unit.locationId === viewingLocation?.id &&
     (unit.name.toLowerCase().includes(unitsSearch.toLowerCase()) ||
-     unit.description.toLowerCase().includes(unitsSearch.toLowerCase()))
+      unit.description.toLowerCase().includes(unitsSearch.toLowerCase()))
   );
 
   return (
@@ -341,7 +303,7 @@ export function OrganizationsLocations() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => setShowKPIs(!showKPIs)}
             className="p-2.5 text-gray-600 hover:bg-white hover:text-blue-600 rounded-lg transition-all shadow-sm"
             title={showKPIs ? 'Hide Statistics' : 'Show Statistics'}
@@ -402,11 +364,10 @@ export function OrganizationsLocations() {
                 setActiveTab('locations');
                 setSearchTerm('');
               }}
-              className={`py-4 px-1 border-b-2 transition-colors ${
-                activeTab === 'locations'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
+              className={`py-4 px-1 border-b-2 transition-colors ${activeTab === 'locations'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <MapPin size={20} />
@@ -418,11 +379,10 @@ export function OrganizationsLocations() {
                 setActiveTab('organizations');
                 setSearchTerm('');
               }}
-              className={`py-4 px-1 border-b-2 transition-colors ${
-                activeTab === 'organizations'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
-              }`}
+              className={`py-4 px-1 border-b-2 transition-colors ${activeTab === 'organizations'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
             >
               <div className="flex items-center gap-2">
                 <Building2 size={20} />
@@ -449,7 +409,7 @@ export function OrganizationsLocations() {
                     className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                
+
                 <select
                   value={filterOrganization}
                   onChange={(e) => setFilterOrganization(e.target.value)}
@@ -503,10 +463,9 @@ export function OrganizationsLocations() {
                           </td>
                           <td className="px-6 py-4 font-medium">{location.name}</td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              location.type === 'Study Facility' ? 'bg-green-100 text-green-800' :
+                            <span className={`px-3 py-1 rounded-full text-sm ${location.type === 'Study Facility' ? 'bg-green-100 text-green-800' :
                               'bg-purple-100 text-purple-800'
-                            }`}>
+                              }`}>
                               {location.type}
                             </span>
                           </td>
@@ -517,15 +476,14 @@ export function OrganizationsLocations() {
                           </td>
                           <td className="px-6 py-4 text-sm">{location.address}</td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              location.status === 'Active' ? 'bg-green-100 text-green-800' :
+                            <span className={`px-3 py-1 rounded-full text-sm ${location.status === 'Active' ? 'bg-green-100 text-green-800' :
                               'bg-gray-100 text-gray-800'
-                            }`}>
+                              }`}>
                               {location.status}
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <button 
+                            <button
                               onClick={() => {
                                 setViewingLocation(location);
                                 setShowLocationPanel(true);
@@ -608,15 +566,14 @@ export function OrganizationsLocations() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              org.status === 'Active' ? 'bg-green-100 text-green-800' :
+                            <span className={`px-3 py-1 rounded-full text-sm ${org.status === 'Active' ? 'bg-green-100 text-green-800' :
                               'bg-gray-100 text-gray-800'
-                            }`}>
+                              }`}>
                               {org.status}
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <button 
+                            <button
                               onClick={() => {
                                 setViewingOrg(org);
                                 setShowOrgPanel(true);
@@ -660,21 +617,19 @@ export function OrganizationsLocations() {
                 <div className="flex gap-1 border-b border-gray-200">
                   <button
                     onClick={() => setLocationPanelTab('details')}
-                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      locationPanelTab === 'details'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
+                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${locationPanelTab === 'details'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     Details
                   </button>
                   <button
                     onClick={() => setLocationPanelTab('units')}
-                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      locationPanelTab === 'units'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
+                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${locationPanelTab === 'units'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     Units
                   </button>
@@ -689,101 +644,99 @@ export function OrganizationsLocations() {
                   {/* Basic Information */}
                   <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
                     <h3 className="text-sm text-gray-600 mb-3">Location Information</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Location Name</label>
-                    <p className="text-gray-900 font-medium">{viewingLocation.name}</p>
-                  </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Location Code</label>
-                    <p className="text-gray-900 font-mono bg-gray-100 px-3 py-1 rounded inline-block">{viewingLocation.locationCode}</p>
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Location Name</label>
+                        <p className="text-gray-900 font-medium">{viewingLocation.name}</p>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Organization</label>
-                    <p className="text-gray-900">{viewingLocation.organizationName}</p>
-                    <p className="text-sm text-gray-500">{viewingLocation.organizationCode}</p>
-                  </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Location Code</label>
+                        <p className="text-gray-900 font-mono bg-gray-100 px-3 py-1 rounded inline-block">{viewingLocation.locationCode}</p>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Type</label>
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-                      viewingLocation.type === 'Study Facility' ? 'bg-green-100 text-green-800' :
-                      'bg-purple-100 text-purple-800'
-                    }`}>
-                      {viewingLocation.type}
-                    </span>
-                  </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Organization</label>
+                        <p className="text-gray-900">{viewingLocation.organizationName}</p>
+                        <p className="text-sm text-gray-500">{viewingLocation.organizationCode}</p>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Status</label>
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-                      viewingLocation.status === 'Active' ? 'bg-green-100 text-green-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {viewingLocation.status}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Type</label>
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm ${viewingLocation.type === 'Study Facility' ? 'bg-green-100 text-green-800' :
+                          'bg-purple-100 text-purple-800'
+                          }`}>
+                          {viewingLocation.type}
+                        </span>
+                      </div>
 
-              {/* Address Information */}
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
-                <h3 className="text-sm text-gray-600 mb-3">Address</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-600 mb-1">Address Line 1</label>
-                    <p className="text-gray-900">{viewingLocation.address1}</p>
-                  </div>
-
-                  {viewingLocation.address2 && (
-                    <div className="md:col-span-2">
-                      <label className="block text-sm text-gray-600 mb-1">Address Line 2</label>
-                      <p className="text-gray-900">{viewingLocation.address2}</p>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Status</label>
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm ${viewingLocation.status === 'Active' ? 'bg-green-100 text-green-800' :
+                          'bg-gray-100 text-gray-800'
+                          }`}>
+                          {viewingLocation.status}
+                        </span>
+                      </div>
                     </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">City</label>
-                    <p className="text-gray-900">{viewingLocation.city || 'N/A'}</p>
                   </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">State</label>
-                    <p className="text-gray-900">{viewingLocation.state || 'N/A'}</p>
+                  {/* Address Information */}
+                  <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
+                    <h3 className="text-sm text-gray-600 mb-3">Address</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm text-gray-600 mb-1">Address Line 1</label>
+                        <p className="text-gray-900">{viewingLocation.address1}</p>
+                      </div>
+
+                      {viewingLocation.address2 && (
+                        <div className="md:col-span-2">
+                          <label className="block text-sm text-gray-600 mb-1">Address Line 2</label>
+                          <p className="text-gray-900">{viewingLocation.address2}</p>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">City</label>
+                        <p className="text-gray-900">{viewingLocation.city || 'N/A'}</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">State</label>
+                        <p className="text-gray-900">{viewingLocation.state || 'N/A'}</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">ZIP Code</label>
+                        <p className="text-gray-900">{viewingLocation.zipCode || 'N/A'}</p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">ZIP Code</label>
-                    <p className="text-gray-900">{viewingLocation.zipCode || 'N/A'}</p>
-                  </div>
-                </div>
-              </div>
+                  {/* Contact Information */}
+                  <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
+                    <h3 className="text-sm text-gray-600 mb-3">Contact Information</h3>
 
-              {/* Contact Information */}
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
-                <h3 className="text-sm text-gray-600 mb-3">Contact Information</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Contact Name</label>
-                    <p className="text-gray-900">{viewingLocation.contactName || 'Not specified'}</p>
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Contact Name</label>
+                        <p className="text-gray-900">{viewingLocation.contactName || 'Not specified'}</p>
+                      </div>
 
-                  <div>
-                    <label className="block text-sm text-gray-600 mb-1">Contact Phone</label>
-                    <p className="text-gray-900">{viewingLocation.contactPhone || 'Not specified'}</p>
-                  </div>
+                      <div>
+                        <label className="block text-sm text-gray-600 mb-1">Contact Phone</label>
+                        <p className="text-gray-900">{viewingLocation.contactPhone || 'Not specified'}</p>
+                      </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-600 mb-1">Contact Email</label>
-                    <p className="text-gray-900">{viewingLocation.contactEmail || 'Not specified'}</p>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm text-gray-600 mb-1">Contact Email</label>
+                        <p className="text-gray-900">{viewingLocation.contactEmail || 'Not specified'}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
                   {/* Additional Notes */}
                   {viewingLocation.notes && (
@@ -881,7 +834,7 @@ export function OrganizationsLocations() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t border-gray-200">
-                <button 
+                <button
                   onClick={handleCloseLocationPanel}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
@@ -915,7 +868,7 @@ export function OrganizationsLocations() {
               {/* Basic Information */}
               <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
                 <h3 className="text-sm text-gray-600 mb-3">Organization Information</h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-600 mb-1">Organization Name</label>
@@ -936,10 +889,9 @@ export function OrganizationsLocations() {
 
                   <div>
                     <label className="block text-sm text-gray-600 mb-1">Status</label>
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${
-                      viewingOrg.status === 'Active' ? 'bg-green-100 text-green-800' :
+                    <span className={`inline-block px-3 py-1 rounded-full text-sm ${viewingOrg.status === 'Active' ? 'bg-green-100 text-green-800' :
                       'bg-gray-100 text-gray-800'
-                    }`}>
+                      }`}>
                       {viewingOrg.status}
                     </span>
                   </div>
@@ -958,7 +910,7 @@ export function OrganizationsLocations() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t border-gray-200">
-                <button 
+                <button
                   onClick={handleCloseOrgPanel}
                   className="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >

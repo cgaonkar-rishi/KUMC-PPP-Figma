@@ -1,0 +1,6 @@
+﻿components/Participants.tsx(22,27): error TS6133: 'setSelectedStudies' is declared but its value is never read.
+components/Participants.tsx(24,10): error TS6133: 'currentStudies' is declared but its value is never read.
+components/Participants.tsx(361,20): error TS6133: 'studies' is declared but its value is never read.
+components/Participants.tsx(758,42): error TS6133: 'e' is declared but its value is never read.
+components/Participants.tsx(777,42): error TS6133: 'e' is declared but its value is never read.
+components/ui/sonner.tsx(3,26): error TS2307: Cannot find module 'next-themes' or its corresponding type declarations.

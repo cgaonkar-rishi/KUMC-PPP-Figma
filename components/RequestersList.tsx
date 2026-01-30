@@ -1,0 +1,26 @@
+// List of requesters for payment requests
+export const requesters = [
+  "Amber Unrein", "Cristal Monge", "Emily Kelly", "Michelle Truesdale", "Jenae Moore",
+  "Ankita Tiwari", "Emma Kelly", "Morgan Brucks", "Grace Heenan", "Cary Felzien",
+  "Tamara Rounds", "Keri Cox", "Julianna McKee", "Macaria Velasquez", "Nasim Nosratinia",
+  "Anna Rice", "Annie Henderson", "Jade Robichaud", "Anna Brashear", "April Langhammer",
+  "Sarah Irvin", "Leo Leonard", "Raechel Camones", "Anne Nugent", "Theresa Howard",
+  "Hannah Melton", "Amanda Thimmesch", "Nicole Mathis", "Annette Becker", "Lety Sarmiento",
+  "Olivia Price", "Krystal Pittman", "Jill Torneden", "Ali Russo", "Shannon Fletcher",
+  "Chelsey Aulukh", "Megan Gangwish", "Elizabeth Dillon", "Vianca Williams", "Alyssa Bowker",
+  "Asuka Suzuki", "Rachel Nikolov", "Esha Garg", "Terry Christenson", "Nicholas Levine",
+  "Jillian Case", "Hafsah Diakhate", "Jodi Claybaugh", "Sravya Kaparthi", "Tanner Wilson",
+  "Katie Chavez", "Sara Baker", "Lauryn Gorby", "Bethany Forseth", "Marion Leaman",
+  "Rachael Rawlings", "Megan Murray", "Jessie Lamphier", "Daniel Rivera", "Rahul Chanolian",
+  "Kelsey Strube", "Abigayle Joyce", "Grace Bolamperti", "Madelyn Arnautov", "Becca Johnson",
+  "Luigi Boccardi", "Sarina Fay", "Crystal Billings", "Vanessa Verschelden", "Kelsi Palacios",
+  "Nancy Ziegler", "Kristin Fravel", "Daijah Jones", "Yolanda Murr", "Betsy Sweiger",
+  "John Mclean", "Jordan Elliott", "Emilia Potts", "Bailey Foster", "Kate Canova",
+  "Reagan Smith", "Ashley Barry", "Wamda Ahmed", "Rachel Heueisen", "Linda d'Silva",
+  "Rachel Ruiz", "Ronal Castro", "Robin Davis", "Andrea Klempnauer", "Victoria Dorman",
+  "Emily Work", "Rachel Holden", "Dan Le", "Julie-Ann Dutton", "Lucas Lemar",
+  "Nashwa Mohammad", "Mya Milius", "Laura Crabtree", "Makaila Pelter", "Caitlin Payne",
+  "Stephanie Stauffer", "Bria Bartsch", "Max Hardenbrook", "Grace Millington", "Jacqueline Smart",
+  "Jeffery Honas", "Mary Butler", "Rafaela Nelson", "Francisca Javiera Allendes", "Mia Smith",
+  "Jonath0n Barnette", "Joseph Kelly", "Whitney Theis", "Cameron Zoraghchi", "KUMCRI_batch"
+];

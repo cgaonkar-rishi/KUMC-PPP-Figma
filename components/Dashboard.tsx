@@ -1,6 +1,7 @@
-import { BarChart3, Users, FlaskConical, Calendar, TrendingUp, AlertCircle, CheckCircle, Clock, DollarSign, ArrowUpRight, ArrowDownRight, Activity, FileText, Target, Zap } from 'lucide-react';
+import { Users, FlaskConical, Calendar, TrendingUp, AlertCircle, Activity } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export function Dashboard() {
   const [paymentPeriod, setPaymentPeriod] = useState('week');
